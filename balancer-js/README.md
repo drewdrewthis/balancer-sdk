@@ -80,7 +80,7 @@ Promise<QueryWithSorOutput {
 
 This method provides a wrapper around the the Balancer Vault [method for a batchSwap](https://dev.balancer.fi/references/contracts/apis/the-vault#batch-swaps).
 
-_NB: This method doesn't execute a batchSwap -- it returns an [ABI byte string](https://docs.soliditylang.org/en/latest/abi-spec.html) containing the data of the function call on a contract, which can then be sent to the network (ex. [sendTransaction](https://web3js.readthedocs.io/en/v1.2.11/web3-eth.html#sendtransaction)). to be executed. encoded string of the batchSwap which can be sent to a miner the blockchain execute the batchSwap. See example for more info._
+_NB: This method doesn't execute a batchSwap -- it returns an [ABI byte string](https://docs.soliditylang.org/en/latest/abi-spec.html) containing the data of the function call on a contract, which can then be sent to the network (ex. [sendTransaction](https://web3js.readthedocs.io/en/v1.2.11/web3-eth.html#sendtransaction)). to be executed. [See example for more info](./examples/batchSwap.ts)._
 
 ```js
 /**
