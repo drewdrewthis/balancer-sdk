@@ -97,7 +97,7 @@ swaps.encodeBatchSwap(batchSwap: {
 }): string
 ```
 
-[Example](./examples/batchSwap.ts)
+[Example](./examples/flashSwap.ts)
 
 #### Feature: Flash Swaps
 
