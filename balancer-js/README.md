@@ -27,7 +27,7 @@ const swaps = new swapService({
 });
 ```
 
-### queryBatchSwap
+### #queryBatchSwap
 
 The Balancer Vault provides a [method to simulate a call to batchSwap](https://github.com/balancer-labs/balancer-v2-monorepo/blob/master/pkg/vault/contracts/interfaces/IVault.sol#L644).
 This function performs no checks on the sender or recipient or token balances or approvals. Note that this function is not 'view' (due to implementation details): the client code must explicitly execute eth_call instead of eth_sendTransaction.
@@ -48,7 +48,7 @@ swaps.queryBatchSwap(batchSwap: {
 
 [Example](./examples/queryBatchSwap.ts)
 
-### queryBatchSwapWithSor
+### #queryBatchSwapWithSor
 
 Uses SOR to create and query a batchSwap for multiple tokens in > multiple tokensOut.
 
@@ -76,7 +76,34 @@ Promise<QueryWithSorOutput {
 }>
 ```
 
-[Example](./examples/queryBatchSwapWithSor.ts)
+### #encodeBatchSwap
+
+This method provides a wrapper around the the Balancer Vault [method for a batchSwap](https://dev.balancer.fi/references/contracts/apis/the-vault#batch-swaps).
+
+_NB: This method doesn't execute a batchSwap -- it returns an [ABI byte string](https://docs.soliditylang.org/en/latest/abi-spec.html) containing the data of the function call on a contract, which can then be sent to the network (ex. [sendTransaction](https://web3js.readthedocs.io/en/v1.2.11/web3-eth.html#sendtransaction)). to be executed. encoded string of the batchSwap which can be sent to a miner the blockchain execute the batchSwap. See example for more info._
+
+```js
+/**
+@param {BatchSwap}          batchSwap - BatchSwap information used for query.
+@param {SwapType}           batchSwap.kind - either exactIn or exactOut.
+@param {BatchSwapSteps[]}   batchSwap.swaps - sequence of swaps.
+@param {string[]}           batchSwap.assets - array contains the addresses of all assets involved in the swaps.
+@returns {string}           encodedBatchSwapData - Returns an ABI byte string containing the data of the function call on a contract.
+*/
+swaps.encodeBatchSwap(batchSwap: {
+    kind: SwapType,
+    swaps: BatchSwapStep[],
+    assets: string[]
+}): string
+```
+
+[Example](./examples/batchSwap.ts)
+
+#### Feature: Flash Swaps
+
+A [Flash Swap](https://dev.balancer.fi/resources/swaps/flash-swaps) is a special type of [batch swap](https://dev.balancer.fi/resources/swaps/batch-swaps) where the caller doesn't need to own or provide any of the input tokens -- the caller is essentiall taking a "flash loan" (an uncollateralized loan) from the Balancer Vault. The full amount of the input token must be returned to the Vault by the end of the batch (plus any swap fees), however any excess of an output tokens can be sent to any address.
+
+[Example](./examples/flashSwap.ts)
 
 ## RelayerService
 
@@ -89,7 +116,7 @@ const relayer = new relayerService(
 );
 ```
 
-### swapUnwrapAaveStaticExactIn
+### #swapUnwrapAaveStaticExactIn
 
 Finds swaps for tokenIn>wrapped Aave static tokens and chains with unwrap to underlying stable. ExactIn - Exact amount of tokenIn to use in swap.
 
@@ -119,7 +146,7 @@ async relayer.swapUnwrapAaveStaticExactIn(
 
 [Example](./examples/relayerSwapUnwrap.ts)
 
-### swapUnwrapAaveStaticExactOut
+### #swapUnwrapAaveStaticExactOut
 
 Finds swaps for tokenIn>wrapped Aave static tokens and chains with unwrap to underlying stable. ExactOut - Exact amount of tokens out are used for swaps.
 
@@ -149,7 +176,7 @@ async relayer.swapUnwrapAaveStaticExactOut(
 
 [Example](./examples/relayerSwapUnwrap.ts)
 
-### exitPoolAndBatchSwap
+### #exitPoolAndBatchSwap
 
 Chains poolExit with batchSwap to final tokens.
 
