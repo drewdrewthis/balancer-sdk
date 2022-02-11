@@ -84,11 +84,14 @@ _NB: This method doesn't execute a batchSwap -- it returns an [ABI byte string](
 
 ```js
 /**
-@param {BatchSwap}          batchSwap - BatchSwap information used for query.
-@param {SwapType}           batchSwap.kind - either exactIn or exactOut.
-@param {BatchSwapSteps[]}   batchSwap.swaps - sequence of swaps.
-@param {string[]}           batchSwap.assets - array contains the addresses of all assets involved in the swaps.
-@returns {string}           encodedBatchSwapData - Returns an ABI byte string containing the data of the function call on a contract.
+ * @param {BatchSwap}           batchSwap - BatchSwap information used for query.
+ * @param {SwapType}            batchSwap.kind - either exactIn or exactOut
+ * @param {BatchSwapSteps[]}    batchSwap.swaps - sequence of swaps
+ * @param {string[]}            batchSwap.assets - array contains the addresses of all assets involved in the swaps
+ * @param {FundManagement}      batchSwap.funds - object containing information about where funds should be taken/sent
+ * @param {number[]}            batchSwap.limits - limits for each token involved in the swap, where either the maximum number of tokens to send (by passing a positive value) or the minimum amount of tokens to receive (by passing a negative value) is specified
+ * @param {string}              batchSwap.deadline -  time (in Unix timestamp) after which it will no longer attempt to make a trade
+ * @returns {string}            encodedBatchSwapData - Returns an ABI byte string containing the data of the function call on a contract
 */
 swaps.encodeBatchSwap(batchSwap: {
     kind: SwapType,

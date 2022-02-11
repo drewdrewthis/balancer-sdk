@@ -4,24 +4,23 @@ import { BalancerSdkConfig } from '../src/types';
 
 dotenv.config();
 
-const { WALLET_PRIVATE_KEY, INFURA } = process.env;
+const { INFURA } = process.env;
 
 const network = Network.KOVAN;
 const rpcUrl = `https://kovan.infura.io/v3/${INFURA}`;
-const privateKey = WALLET_PRIVATE_KEY;
 
 /**
  * Example showing how to use flashSwap.
  */
-async function runFlashSwap() {
+async function runQueryFlashSwap() {
     /**
      * Step 1: Create encoded data string for transaction below.
      */
-    const config: BalancerSdkConfig = { network, rpcUrl, privateKey };
+    const config: BalancerSdkConfig = { network, rpcUrl };
 
     const balancer = new BalancerSDK(config);
 
-    const tx = balancer.swaps.flashSwap({
+    const tx = balancer.swaps.queryFlashSwap({
         poolIds: [
             '0x7320d680ca9bce8048a286f00a79a2c9f8dcd7b3000100000000000000000044',
             '0x36128d5436d2d70cab39c9af9cce146c38554ff0000100000000000000000008',
@@ -36,4 +35,4 @@ async function runFlashSwap() {
 }
 
 // yarn examples:run ./examples/flashSwap.ts
-runFlashSwap();
+runQueryFlashSwap();

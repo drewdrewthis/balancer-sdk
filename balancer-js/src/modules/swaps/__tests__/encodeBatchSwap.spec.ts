@@ -1,12 +1,27 @@
 import { expect } from 'chai';
-import { encodeBatchSwap } from '..';
-import { SwapType } from '../../types';
+import { mockPoolDataService } from '@/test/lib/mockPool';
+import { SwapType } from '../types';
+import { BalancerSdkConfig, BalancerSdkSorConfig, Network, Swaps } from '@/.';
+
+const sorConfig: BalancerSdkSorConfig = {
+    tokenPriceService: 'coingecko',
+    poolDataService: mockPoolDataService,
+    fetchOnChainBalances: false,
+};
+
+const sdkConfig: BalancerSdkConfig = {
+    network: Network.KOVAN,
+    rpcUrl: `https://kovan.infura.io/v3/${process.env.INFURA}`,
+    sor: sorConfig,
+};
+
+const swaps = new Swaps(sdkConfig);
 
 describe('#encodeBatchSwap', () => {
     describe('#flashSwap', () => {
         context('success', () => {
-            it('should return an ABI byte string', () => {
-                const bytestring = encodeBatchSwap({
+            it('should return an ABI byte string', async () => {
+                const bytestring = await swaps.encodeBatchSwap({
                     kind: SwapType.SwapExactIn,
                     swaps: [
                         {
@@ -38,7 +53,7 @@ describe('#encodeBatchSwap', () => {
                     deadline: '999999999999999999', // Infinity
                 });
 
-                expect(bytestring).to.be('TO BE GENERATED ONCE IN PLACE');
+                expect(bytestring).to.equal('TO BE GENERATED ONCE IN PLACE');
             });
         });
     });
