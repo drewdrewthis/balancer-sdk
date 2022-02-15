@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 import { BalancerSDK, Network } from '../src';
 import { BalancerSdkConfig } from '../src/types';
+import { DAI, USDC } from './constants';
 
 dotenv.config();
 
@@ -11,6 +12,14 @@ const rpcUrl = `https://kovan.infura.io/v3/${INFURA}`;
 
 /**
  * Example showing how to use flashSwap.
+ *
+ * To find pool ids and token adddresses on Kova:
+ * https://thegraph.com/hosted-service/subgraph/balancer-labs/balancer-kovan-v2
+ *
+ * Gotchas:
+ * - Both pools must have both assets for swaps to work
+ * - No token balances can be zero
+ * - flashLoanAmount must not add or subtract > 30% of pool liquidity
  */
 async function runQueryFlashSwap() {
     /**
@@ -20,19 +29,17 @@ async function runQueryFlashSwap() {
 
     const balancer = new BalancerSDK(config);
 
-    const tx = balancer.swaps.queryFlashSwap({
+    const response = await balancer.swaps.querySimpleFlashSwap({
+        flashLoanAmount: '100',
         poolIds: [
-            '0x7320d680ca9bce8048a286f00a79a2c9f8dcd7b3000100000000000000000044',
-            '0x36128d5436d2d70cab39c9af9cce146c38554ff0000100000000000000000008',
+            '0x0cdab06b07197d96369fea6f3bea6efc7ecdf7090002000000000000000003de',
+            '0x17018c2f7c345add873474879ff0ed98ebd6346a000200000000000000000642',
         ],
-        assets: [
-            '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
-            '0x9a71012B13CA4d3D0Cdc72A177DF3ef03b0E76A3',
-        ],
+        assets: [USDC.address, DAI.address],
     });
 
-    console.log(tx);
+    console.table(response);
 }
 
-// yarn examples:run ./examples/flashSwap.ts
+// yarn examples:run ./examples/queryFlashSwap.ts
 runQueryFlashSwap();

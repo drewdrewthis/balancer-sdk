@@ -6,7 +6,6 @@ import {
 } from '../types';
 import { queryBatchSwap } from '../queryBatchSwap';
 import { BatchSwap } from '../types';
-import { BigNumber } from '@ethersproject/bignumber';
 import { sum } from 'lodash';
 
 const createSwaps = (
@@ -108,7 +107,9 @@ export async function querySimpleFlashSwap(
 
         return {
             profits,
-            isProfitable: calcProfit(deltas) > 0,
+            isProfitable:
+                calcProfit([profits[tokenAddress0], profits[tokenAddress1]]) >
+                0,
         };
     } catch (err) {
         throw `Failed to querySimpleFlashSwap: ${err}`;

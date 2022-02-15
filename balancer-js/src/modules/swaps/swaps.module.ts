@@ -193,7 +193,7 @@ export class Swaps {
      * @returns {Promise<{profits: Record<string, string>, isProfitable: boolean}>}       Returns an ethersjs transaction response
      */
     async querySimpleFlashSwap(
-        params: QuerySimpleFlashSwapParameters
+        params: Omit<QuerySimpleFlashSwapParameters, 'vaultContract'>
     ): Promise<QuerySimpleFlashSwapResponse> {
         // TO DO - Pull in a ContractsService and use this to pass Vault to queryBatchSwap.
         const vaultContract = new Contract(

@@ -1,33 +1,40 @@
 import dotenv from 'dotenv';
-import { BalancerSDK, Network } from '../src';
-import { BalancerSdkConfig } from '../src/types';
+import { Wallet } from '@ethersproject/wallet';
+import { InfuraProvider } from '@ethersproject/providers';
+import { Network } from '../src/index';
+import { DAI, USDC } from './constants';
+
+import { Swaps } from '../src/modules/swaps/swaps.module';
 
 dotenv.config();
 
-const network = Network.KOVAN;
-const rpcUrl = `https://kovan.infura.io/v3/${INFURA}`;
-const privateKey = WALLET_PRIVATE_KEY;
+const { TRADER_KEY } = process.env;
 
-/**
- * Example showing how to use flashSwap.
- */
+/*
+Example showing how to use Relayer to chain exitPool followed by batchSwaps using tokens from exit.
+User must approve relayer.
+Vault must have approvals for tokens.
+*/
 async function runFlashSwap() {
-    /**
-     * Step 1: Create encoded data string for transaction below.
-     */
-    const config: BalancerSdkConfig = { network, rpcUrl, privateKey };
+    console.log('PRIVATE_KEY', TRADER_KEY);
 
-    const balancer = new BalancerSDK(config);
-
-    const tx = balancer.swaps.flashSwap({
+    const func = Swaps.encodeSimpleFlashSwap({
+        flashLoanAmount: '100',
         poolIds: [
-            '0x7320d680ca9bce8048a286f00a79a2c9f8dcd7b3000100000000000000000044',
-            '0x36128d5436d2d70cab39c9af9cce146c38554ff0000100000000000000000008',
+            '0x0cdab06b07197d96369fea6f3bea6efc7ecdf7090002000000000000000003de',
+            '0x17018c2f7c345add873474879ff0ed98ebd6346a000200000000000000000642',
         ],
-        assets: [
-            '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
-            '0x9a71012B13CA4d3D0Cdc72A177DF3ef03b0E76A3',
-        ],
+        assets: [USDC.address, DAI.address],
+        walletAddress: '0x35f5a330FD2F8e521ebd259FA272bA8069590741',
+    });
+
+    const provider = new InfuraProvider(Network.KOVAN, process.env.INFURA);
+    const wallet = new Wallet(TRADER_KEY as string, provider);
+
+    const tx = await wallet.sendTransaction({
+        data: func,
+        gasPrice: '6000000000',
+        gasLimit: '2000000',
     });
 
     console.log(tx);

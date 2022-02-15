@@ -7,7 +7,7 @@ import {
 import { SwapType } from '../../types';
 import vaultAbi from '@/lib/abi/Vault.json';
 import { balancerVault } from '../../../../lib/constants/config';
-import { InfuraProvider, Provider } from '@ethersproject/providers';
+import { InfuraProvider } from '@ethersproject/providers';
 import { Network } from '../../../../lib/constants/network';
 
 describe('convertSimpleFlashSwapToBatchSwapParameters', () => {
@@ -15,12 +15,12 @@ describe('convertSimpleFlashSwapToBatchSwapParameters', () => {
         const flashSwapParams = {
             flashLoanAmount: '10000',
             poolIds: [
-                '0x7320d680ca9bce8048a286f00a79a2c9f8dcd7b3000100000000000000000044',
-                '0x36128d5436d2d70cab39c9af9cce146c38554ff0000100000000000000000008',
+                '0x0cdab06b07197d96369fea6f3bea6efc7ecdf7090002000000000000000003de',
+                '0x17018c2f7c345add873474879ff0ed98ebd6346a000200000000000000000642',
             ],
             assets: [
-                '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
-                '0x9a71012B13CA4d3D0Cdc72A177DF3ef03b0E76A3',
+                '0xc2569dd7d0fd715b054fbf16e75b001e5c0c1115',
+                '0x04df6e4121c27713ed22341e7c7df330f56f289b',
             ],
             walletAddress: '0x35f5a330FD2F8e521ebd259FA272bA8069590741',
         };
@@ -29,14 +29,14 @@ describe('convertSimpleFlashSwapToBatchSwapParameters', () => {
             kind: SwapType.SwapExactIn,
             swaps: [
                 {
-                    poolId: '0x7320d680ca9bce8048a286f00a79a2c9f8dcd7b3000100000000000000000044',
+                    poolId: '0x0cdab06b07197d96369fea6f3bea6efc7ecdf7090002000000000000000003de',
                     assetInIndex: 0,
                     assetOutIndex: 1,
                     amount: '10000',
                     userData: '0x',
                 },
                 {
-                    poolId: '0x36128d5436d2d70cab39c9af9cce146c38554ff0000100000000000000000008',
+                    poolId: '0x17018c2f7c345add873474879ff0ed98ebd6346a000200000000000000000642',
                     assetInIndex: 1,
                     assetOutIndex: 0,
                     amount: '0',
@@ -44,8 +44,8 @@ describe('convertSimpleFlashSwapToBatchSwapParameters', () => {
                 },
             ],
             assets: [
-                '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
-                '0x9a71012B13CA4d3D0Cdc72A177DF3ef03b0E76A3',
+                '0xc2569dd7d0fd715b054fbf16e75b001e5c0c1115',
+                '0x04df6e4121c27713ed22341e7c7df330f56f289b',
             ],
             funds: {
                 fromInternalBalance: false,
@@ -71,16 +71,16 @@ describe('querySimpleFlashSwap', () => {
             vaultContract: new Contract(
                 balancerVault,
                 vaultAbi,
-                new InfuraProvider(Network.POLYGON, process.env.INFURA)
+                new InfuraProvider(Network.KOVAN, process.env.INFURA)
             ),
             flashLoanAmount: '10000',
             poolIds: [
-                '0x7320d680ca9bce8048a286f00a79a2c9f8dcd7b3000100000000000000000044',
-                '0x36128d5436d2d70cab39c9af9cce146c38554ff0000100000000000000000008',
+                '0x0cdab06b07197d96369fea6f3bea6efc7ecdf7090002000000000000000003de',
+                '0x17018c2f7c345add873474879ff0ed98ebd6346a000200000000000000000642',
             ],
             assets: [
-                '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
-                '0x9a71012B13CA4d3D0Cdc72A177DF3ef03b0E76A3',
+                '0xc2569dd7d0fd715b054fbf16e75b001e5c0c1115',
+                '0x04df6e4121c27713ed22341e7c7df330f56f289b',
             ],
         });
 
@@ -88,7 +88,7 @@ describe('querySimpleFlashSwap', () => {
             assert.isNumber(
                 Number(
                     response.profits[
-                        '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174'
+                        '0xc2569dd7d0fd715b054fbf16e75b001e5c0c1115'
                     ]
                 )
             );
@@ -96,7 +96,7 @@ describe('querySimpleFlashSwap', () => {
             assert.isNumber(
                 Number(
                     response.profits[
-                        '0x9a71012B13CA4d3D0Cdc72A177DF3ef03b0E76A3'
+                        '0x04df6e4121c27713ed22341e7c7df330f56f289b'
                     ]
                 )
             );
