@@ -1,18 +1,18 @@
-import { BatchSwap, SwapType } from '../types';
-import { Contract, PopulatedTransaction } from '@ethersproject/contracts';
+import {
+    QuerySimpleFlashSwapParameters,
+    QuerySimpleFlashSwapResponse,
+    SimpleFlashSwapParameters,
+    SwapType,
+} from '../types';
 import { queryBatchSwap } from '../queryBatchSwap';
-
-interface SimpleFlashSwapParameters {
-    vaultContract: Contract;
-    poolIds: [string, string];
-    assets: BatchSwap['assets'];
-    flashLoanAmount: string;
-}
+import { BatchSwap } from '../types';
+import { BigNumber } from '@ethersproject/bignumber';
+import { sum } from 'lodash';
 
 const createSwaps = (
     poolIds: SimpleFlashSwapParameters['poolIds'],
     amount: string
-) => {
+): BatchSwap['swaps'] => {
     return [
         {
             poolId: poolIds[0],
@@ -31,18 +31,20 @@ const createSwaps = (
     ];
 };
 
-const createArguments = async ({
-    vaultContract,
+export const convertSimpleFlashSwapToBatchSwapParameters = ({
     poolIds,
     assets,
     flashLoanAmount,
-}: SimpleFlashSwapParameters) => {
+    walletAddress,
+}: SimpleFlashSwapParameters & {
+    walletAddress: string;
+}): BatchSwap => {
     const swaps = createSwaps(poolIds, flashLoanAmount);
 
     const funds = {
-        sender: await vaultContract.signer.getAddress(),
+        sender: walletAddress,
         fromInternalBalance: false,
-        recipient: await vaultContract.signer.getAddress(),
+        recipient: walletAddress,
         toInternalBalance: false,
     };
 
@@ -60,36 +62,13 @@ const createArguments = async ({
     };
 };
 
-/**
- * Simple interface to execute a simple flashSwap with the Balancer Vault.
- *
- * A "simple" flash swap is an arbitrage executed with only two tokens and two pools,
- * swapping in the first pool and then back in the second pool for a profit. For more
- * complex flash swaps, you will have to use the batch swap method.
- *
- * Learn more: A [Flash Swap](https://dev.balancer.fi/resources/swaps/flash-swaps).
- *
- * @param {SimpleFlashSwapParameters}   params - BatchSwap information used for query.
- * @param {Contract}                    params.vaultContract - the ethersjs contract for the Balancer Vault. Must have a Signer.
- * @param {string}                      params.flashLoanAmount - initial input amount for the flash loan (first asset)
- * @param {string[]}                    params.poolIds - array of Balancer pool ids
- * @param {string[]}                    params.assets - array of token addresses
- * @returns {TransactionResponse}       Returns an ethersjs transaction response
- */
-export async function simpleFlashSwap(
-    params: SimpleFlashSwapParameters
-): Promise<PopulatedTransaction> {
-    const args = await createArguments(params);
+const deltaToExpectedProfit = (delta: string) => {
+    return Number(delta) * -1;
+};
 
-    return params.vaultContract.batchSwap(
-        args.kind,
-        args.swaps,
-        args.assets,
-        args.funds,
-        args.limits,
-        args.deadline
-    );
-}
+const calcProfit = (profits: string[]) => {
+    return sum(profits);
+};
 
 /**
  * Simple interface to test if a simple flash swap is valid and see potential profits.
@@ -107,32 +86,29 @@ export async function simpleFlashSwap(
  * @param {string}                      params.flashLoanAmount - initial input amount for the flash loan (first asset)
  * @param {string[]}                    params.poolIds - array of Balancer pool ids
  * @param {string[]}                    params.assets - array of token addresses
- * @returns {Promise<{profits: Record<string, string>, isProfitable: boolean}>}       Returns an ethersjs transaction response
+ * @returns {Promise<QuerySimpleFlashSwapResponse}>}       Returns an ethersjs transaction response
  */
 export async function querySimpleFlashSwap(
-    params: SimpleFlashSwapParameters
-): Promise<{ profits: Record<string, string>; isValid: boolean }> {
-    const args = await createArguments(params);
-    const [tokenAddress1, tokenAddress2] = params.assets;
+    params: QuerySimpleFlashSwapParameters
+): Promise<QuerySimpleFlashSwapResponse> {
+    const [tokenAddress0, tokenAddress1] = params.assets;
 
     try {
-        const response = await queryBatchSwap(
+        const deltas = await queryBatchSwap(
             params.vaultContract,
-            args.kind,
-            args.swaps,
-            args.assets
+            SwapType.SwapExactIn,
+            createSwaps(params.poolIds, params.flashLoanAmount),
+            params.assets
         );
 
         const profits = {
-            [tokenAddress1]: String(Number(response[0]) * -1),
-            [tokenAddress2]: String(Number(response[1]) * -1),
+            [tokenAddress0]: deltaToExpectedProfit(deltas[0]).toString(),
+            [tokenAddress1]: deltaToExpectedProfit(deltas[1]).toString(),
         };
 
         return {
             profits,
-            isValid:
-                Number(profits[tokenAddress1]) > 0 &&
-                Number(profits[tokenAddress2]) > 0,
+            isProfitable: calcProfit(deltas) > 0,
         };
     } catch (err) {
         throw `Failed to querySimpleFlashSwap: ${err}`;

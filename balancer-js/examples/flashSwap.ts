@@ -4,8 +4,6 @@ import { BalancerSdkConfig } from '../src/types';
 
 dotenv.config();
 
-const { WALLET_PRIVATE_KEY, INFURA } = process.env;
-
 const network = Network.KOVAN;
 const rpcUrl = `https://kovan.infura.io/v3/${INFURA}`;
 const privateKey = WALLET_PRIVATE_KEY;
