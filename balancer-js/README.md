@@ -78,7 +78,7 @@ Promise<QueryWithSorOutput {
 
 ### #encodeBatchSwap
 
-This method provides a wrapper around the the Balancer Vault [method for a batchSwap](https://dev.balancer.fi/references/contracts/apis/the-vault#batch-swaps).
+Static method to encode a batch swap [method for a batchSwap](https://dev.balancer.fi/references/contracts/apis/the-vault#batch-swaps).
 
 _NB: This method doesn't execute a batchSwap -- it returns an [ABI byte string](https://docs.soliditylang.org/en/latest/abi-spec.html) containing the data of the function call on a contract, which can then be sent to the network (ex. [sendTransaction](https://web3js.readthedocs.io/en/v1.2.11/web3-eth.html#sendtransaction)). to be executed. [See example for more info](./examples/batchSwap.ts)._
 
@@ -93,7 +93,7 @@ _NB: This method doesn't execute a batchSwap -- it returns an [ABI byte string](
  * @param {string}              batchSwap.deadline -  time (in Unix timestamp) after which it will no longer attempt to make a trade
  * @returns {string}            encodedBatchSwapData - Returns an ABI byte string containing the data of the function call on a contract
 */
-swaps.encodeBatchSwap(batchSwap: {
+Swaps.encodeBatchSwap(batchSwap: {
     kind: SwapType,
     swaps: BatchSwapStep[],
     assets: string[]
@@ -102,11 +102,56 @@ swaps.encodeBatchSwap(batchSwap: {
 
 [Example](./examples/flashSwap.ts)
 
-#### Feature: Flash Swaps
+### Flash Swaps
 
 A [Flash Swap](https://dev.balancer.fi/resources/swaps/flash-swaps) is a special type of [batch swap](https://dev.balancer.fi/resources/swaps/batch-swaps) where the caller doesn't need to own or provide any of the input tokens -- the caller is essentiall taking a "flash loan" (an uncollateralized loan) from the Balancer Vault. The full amount of the input token must be returned to the Vault by the end of the batch (plus any swap fees), however any excess of an output tokens can be sent to any address.
 
+### #encodeSimpleFlashSwap
+
+Static method to encode a simple flash swap [method for a batchSwap](https://dev.balancer.fi/resources/swaps/flash-swaps).
+
+A "simple" flash swap is an arbitrage executed with only two tokens and two pools,
+swapping in the first pool and then back in the second pool for a profit. For more
+complex flash swaps, you will have to use the batch swap method.
+
+```js
+/**
+ * @param {SimpleFlashSwapParameters}   params - BatchSwap information used for query.
+ * @param {string}                      params.flashLoanAmount - initial input amount for the flash loan (first asset)
+ * @param {string[]}                    params.poolIds - array of Balancer pool ids
+ * @param {string[]}                    params.assets - array of token addresses
+ * @param {string}                      params.walletAddress - array of token addresses
+ * @returns {string}            encodedBatchSwapData - Returns an ABI byte string containing the data of the function call on a contract
+*/
+Swaps.encodeSimpleFlashSwap(batchSwap: {
+    kind: SwapType,
+    swaps: BatchSwapStep[],
+    assets: string[]
+}): string
+```
+
 [Example](./examples/flashSwap.ts)
+
+### #querySimpleFlashSwap
+
+Method to test if a simple flash swap is valid and see potential profits.
+
+```js
+/**
+ * @param {SimpleFlashSwapParameters}   params - BatchSwap information used for query.
+ * @param {string}                      params.flashLoanAmount - initial input amount for the flash loan (first asset)
+ * @param {string[]}                    params.poolIds - array of Balancer pool ids
+ * @param {string[]}                    params.assets - array of token addresses
+ * @returns {Promise<{profits: Record<string, string>, isProfitable: boolean}>}       Returns an ethersjs transaction response
+*/
+swaps.querySimpleFlashSwap(batchSwap: {
+    kind: SwapType,
+    swaps: BatchSwapStep[],
+    assets: string[]
+}): string
+```
+
+[Example](./examples/querySimpleFlashSwap.ts)
 
 ## RelayerService
 
