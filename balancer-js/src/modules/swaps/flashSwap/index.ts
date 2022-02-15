@@ -8,6 +8,23 @@ import { queryBatchSwap } from '../queryBatchSwap';
 import { BatchSwap } from '../types';
 import { sum } from 'lodash';
 
+const checkSimpleFlashSwapParams = (params: {
+    poolIds: string[];
+    assets: string[];
+}) => {
+    if (params.poolIds.length > 2) {
+        throw new Error(
+            'Simple flash swap only supports a maximum of two pools'
+        );
+    }
+
+    if (params.assets.length > 2) {
+        throw new Error(
+            'Simple flash swap only supports a maximum of to two assets (tokens)'
+        );
+    }
+};
+
 const createSwaps = (
     poolIds: SimpleFlashSwapParameters['poolIds'],
     amount: string
@@ -38,6 +55,8 @@ export const convertSimpleFlashSwapToBatchSwapParameters = ({
 }: SimpleFlashSwapParameters & {
     walletAddress: string;
 }): BatchSwap => {
+    checkSimpleFlashSwapParams({ poolIds, assets });
+
     const swaps = createSwaps(poolIds, flashLoanAmount);
 
     const funds = {
@@ -90,6 +109,8 @@ const calcProfit = (profits: string[]) => {
 export async function querySimpleFlashSwap(
     params: QuerySimpleFlashSwapParameters
 ): Promise<QuerySimpleFlashSwapResponse> {
+    checkSimpleFlashSwapParams(params);
+
     const [tokenAddress0, tokenAddress1] = params.assets;
 
     try {

@@ -18,7 +18,7 @@ Vault must have approvals for tokens.
 async function runFlashSwap() {
     console.log('PRIVATE_KEY', TRADER_KEY);
 
-    const func = Swaps.encodeSimpleFlashSwap({
+    const encodedBatchSwapData = Swaps.encodeSimpleFlashSwap({
         flashLoanAmount: '100',
         poolIds: [
             '0x0cdab06b07197d96369fea6f3bea6efc7ecdf7090002000000000000000003de',
@@ -32,7 +32,7 @@ async function runFlashSwap() {
     const wallet = new Wallet(TRADER_KEY as string, provider);
 
     const tx = await wallet.sendTransaction({
-        data: func,
+        data: encodedBatchSwapData,
         gasPrice: '6000000000',
         gasLimit: '2000000',
     });
