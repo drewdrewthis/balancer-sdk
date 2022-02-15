@@ -11,9 +11,7 @@ dotenv.config();
 const { TRADER_KEY } = process.env;
 
 /*
-Example showing how to use Relayer to chain exitPool followed by batchSwaps using tokens from exit.
-User must approve relayer.
-Vault must have approvals for tokens.
+Example showing how to encode and send a flash swap transaction
 */
 async function runFlashSwap() {
     console.log('PRIVATE_KEY', TRADER_KEY);
@@ -33,6 +31,12 @@ async function runFlashSwap() {
 
     const tx = await wallet.sendTransaction({
         data: encodedBatchSwapData,
+        /**
+         * The following gas inputs are optional,
+         * however, if your transaction will fail, it will
+         * tell you that the gas can't be estimated, which
+         * is a confusing error.
+         **/
         gasPrice: '6000000000',
         gasLimit: '2000000',
     });
@@ -40,5 +44,5 @@ async function runFlashSwap() {
     console.log(tx);
 }
 
-// yarn examples:run ./examples/flashSwap.ts
+// yarn examples:run ./examples/simpleFlashSwap.ts
 runFlashSwap();

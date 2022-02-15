@@ -11,9 +11,9 @@ const network = Network.KOVAN;
 const rpcUrl = `https://kovan.infura.io/v3/${INFURA}`;
 
 /**
- * Example showing how to use flashSwap.
+ * Example showing how to query a flash swap to test if it will be profitable.
  *
- * To find pool ids and token adddresses on Kova:
+ * To find pool ids and token adddresses on Kovan:
  * https://thegraph.com/hosted-service/subgraph/balancer-labs/balancer-kovan-v2
  *
  * Gotchas:

@@ -110,6 +110,13 @@ IMPORTANT: A "simple" flash swap is an arbitrage executed with only two tokens a
 swapping in the first pool and then back in the second pool for a profit. For more
 complex flash swaps, you will have to use batch swap directly.
 
+Gotchas:
+
+-   Both pools must have both assets (tokens) for swaps to work
+-   No token balances can be zero
+-   flashLoanAmount must not add or subtract > 30% of pool liquidity (see [limitations](https://docs.balancer.fi/v/v1/core-concepts/protocol/limitations#v2-limits))
+-   If the flash swap isn't profitable, the interal flash loan will fail.
+
 ### #encodeSimpleFlashSwap
 
 Static method to encode a simple flash swap [method for a batchSwap](https://dev.balancer.fi/resources/swaps/flash-swaps).
