@@ -5,6 +5,7 @@ import { Network } from '../src/index';
 import { DAI, USDC } from './constants';
 
 import { Swaps } from '../src/modules/swaps/swaps.module';
+import { balancerVault } from '../src/lib/constants/config';
 
 dotenv.config();
 
@@ -12,6 +13,12 @@ const { TRADER_KEY } = process.env;
 
 /*
 Example showing how to encode and send a flash swap transaction
+
+To see a successful execution of this example on Kovan:
+https://kovan.etherscan.io/tx/0x2bca23b1c98e9bfe51aa4fbdd16db8c1b81484a92486233cd9dc504116e67eb5
+
+NB: If this fails, test first the querySimpleFlashSwap yields a
+profitable flashSwap
 */
 async function runFlashSwap() {
     console.log('PRIVATE_KEY', TRADER_KEY);
@@ -31,14 +38,15 @@ async function runFlashSwap() {
 
     const tx = await wallet.sendTransaction({
         data: encodedBatchSwapData,
+        to: balancerVault,
         /**
          * The following gas inputs are optional,
          * however, if your transaction will fail, it will
          * tell you that the gas can't be estimated, which
          * is a confusing error.
          **/
-        gasPrice: '6000000000',
-        gasLimit: '2000000',
+        // gasPrice: '6000000000',
+        // gasLimit: '2000000',
     });
 
     console.log(tx);
