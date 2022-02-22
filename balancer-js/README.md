@@ -103,7 +103,7 @@ Swaps.encodeBatchSwap(batchSwap: {
 }): string
 ```
 
-[Example (TODO)](./examples/batchSwap.ts)
+[Example](./examples/batchSwap.ts)
 
 ### Swap Service: Flash Swaps
 
