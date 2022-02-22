@@ -8,10 +8,10 @@ import { queryBatchSwap } from '../queryBatchSwap';
 import { BatchSwap } from '../types';
 import { sum } from 'lodash';
 
-const checkSimpleFlashSwapParams = (params: {
+function checkSimpleFlashSwapParams(params: {
     poolIds: string[];
     assets: string[];
-}) => {
+}) {
     if (params.poolIds.length > 2) {
         throw new Error(
             'Simple flash swap only supports a maximum of two pools'
@@ -23,12 +23,12 @@ const checkSimpleFlashSwapParams = (params: {
             'Simple flash swap only supports a maximum of to two assets (tokens)'
         );
     }
-};
+}
 
-const createSwaps = (
+function createSwaps(
     poolIds: SimpleFlashSwapParameters['poolIds'],
     amount: string
-): BatchSwap['swaps'] => {
+): BatchSwap['swaps'] {
     return [
         {
             poolId: poolIds[0],
@@ -45,16 +45,16 @@ const createSwaps = (
             userData: '0x',
         },
     ];
-};
+}
 
-export const convertSimpleFlashSwapToBatchSwapParameters = ({
+export function convertSimpleFlashSwapToBatchSwapParameters({
     poolIds,
     assets,
     flashLoanAmount,
     walletAddress,
 }: SimpleFlashSwapParameters & {
     walletAddress: string;
-}): BatchSwap => {
+}): BatchSwap {
     checkSimpleFlashSwapParams({ poolIds, assets });
 
     const swaps = createSwaps(poolIds, flashLoanAmount);
@@ -78,15 +78,15 @@ export const convertSimpleFlashSwapToBatchSwapParameters = ({
         limits,
         deadline,
     };
-};
+}
 
-const deltaToExpectedProfit = (delta: string) => {
+function deltaToExpectedProfit(delta: string) {
     return Number(delta) * -1;
-};
+}
 
-const calcProfit = (profits: string[]) => {
+function calcProfit(profits: string[]) {
     return sum(profits);
-};
+}
 
 /**
  * Simple interface to test if a simple flash swap is valid and see potential profits.
