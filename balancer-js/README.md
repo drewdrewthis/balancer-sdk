@@ -78,9 +78,9 @@ Promise<QueryWithSorOutput {
 
 ### #encodeBatchSwap
 
-Static method to encode a batch swap [method for a batchSwap](https://dev.balancer.fi/references/contracts/apis/the-vault#batch-swaps).
+Static method to encode a [batch swap](https://dev.balancer.fi/references/contracts/apis/the-vault#batch-swaps).
 
-_NB: This method doesn't execute a batchSwap -- it returns an [ABI byte string](https://docs.soliditylang.org/en/latest/abi-spec.html) containing the data of the function call on a contract, which can then be sent to the network (ex. [sendTransaction](https://web3js.readthedocs.io/en/v1.2.11/web3-eth.html#sendtransaction)). to be executed. [See example for more info](./examples/batchSwap.ts)._
+_NB: This method doesn't execute a batchSwap -- it returns an [ABI byte string](https://docs.soliditylang.org/en/latest/abi-spec.html) containing the data of the function call on a contract, which can then be sent to the network (ex. [sendTransaction](https://web3js.readthedocs.io/en/v1.2.11/web3-eth.html#sendtransaction)). to be executed. See example for more info._
 
 ```js
 /**
@@ -96,13 +96,16 @@ _NB: This method doesn't execute a batchSwap -- it returns an [ABI byte string](
 Swaps.encodeBatchSwap(batchSwap: {
     kind: SwapType,
     swaps: BatchSwapStep[],
-    assets: string[]
+    assets: string[],
+    funds: FundManagement,
+    limits: number[],
+    deadline: string
 }): string
 ```
 
-[Example](./examples/flashSwap.ts)
+[Example (TODO)](./examples/batchSwap.ts)
 
-### Flash Swaps
+### Swap Service: Flash Swaps
 
 A [Flash Swap](https://dev.balancer.fi/resources/swaps/flash-swaps) is a special type of [batch swap](https://dev.balancer.fi/resources/swaps/batch-swaps) where the caller doesn't need to own or provide any of the input tokens -- the caller is essentiall taking a "flash loan" (an uncollateralized loan) from the Balancer Vault. The full amount of the input token must be returned to the Vault by the end of the batch (plus any swap fees), however any excess of an output tokens can be sent to any address.
 
@@ -113,13 +116,15 @@ complex flash swaps, you will have to use batch swap directly.
 Gotchas:
 
 -   Both pools must have both assets (tokens) for swaps to work
--   No token balances can be zero
+-   No pool token balances can be zero
 -   flashLoanAmount must not add or subtract > 30% of pool liquidity (see [limitations](https://docs.balancer.fi/v/v1/core-concepts/protocol/limitations#v2-limits))
 -   If the flash swap isn't profitable, the interal flash loan will fail.
 
 ### #encodeSimpleFlashSwap
 
 Static method to encode a simple flash swap [method for a batchSwap](https://dev.balancer.fi/resources/swaps/flash-swaps).
+
+_NB: This method doesn't execute any swaps -- it returns an [ABI byte string](https://docs.soliditylang.org/en/latest/abi-spec.html) containing the data of the function call on a contract, which can then be sent to the network (ex. [sendTransaction](https://web3js.readthedocs.io/en/v1.2.11/web3-eth.html#sendtransaction)). to be executed. See example for more info._
 
 ```js
 /**
@@ -130,10 +135,11 @@ Static method to encode a simple flash swap [method for a batchSwap](https://dev
  * @param {string}                      params.walletAddress - array of token addresses
  * @returns {string}            encodedBatchSwapData - Returns an ABI byte string containing the data of the function call on a contract
 */
-Swaps.encodeSimpleFlashSwap(batchSwap: {
-    kind: SwapType,
-    swaps: BatchSwapStep[],
+Swaps.encodeSimpleFlashSwap(simpleFlashSwap: {
+    flashLoanAmount: string,
+    poolIds: string[],
     assets: string[]
+    walletAddress: string[]
 }): string
 ```
 

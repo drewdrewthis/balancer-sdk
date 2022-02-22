@@ -17,14 +17,12 @@ const rpcUrl = `https://kovan.infura.io/v3/${INFURA}`;
  * https://thegraph.com/hosted-service/subgraph/balancer-labs/balancer-kovan-v2
  *
  * Gotchas:
- * - Both pools must have both assets for swaps to work
- * - No token balances can be zero
- * - flashLoanAmount must not add or subtract > 30% of pool liquidity
+-   Both pools must have both assets (tokens) for swaps to work
+-   No pool token balances can be zero
+-   flashLoanAmount must not add or subtract > 30% of pool liquidity (see [limitations](https://docs.balancer.fi/v/v1/core-concepts/protocol/limitations#v2-limits))
+-   If the flash swap isn't profitable, the interal flash loan will fail.
  */
 async function runQueryFlashSwap() {
-    /**
-     * Step 1: Create encoded data string for transaction below.
-     */
     const config: BalancerSdkConfig = { network, rpcUrl };
 
     const balancer = new BalancerSDK(config);

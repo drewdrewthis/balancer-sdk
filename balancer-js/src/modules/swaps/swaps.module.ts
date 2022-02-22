@@ -54,7 +54,7 @@ export class Swaps {
     }
 
     /**
-     * Encode batchSwap function
+     * Encode batchSwap in an ABI byte string
      *
      * [See method for a batchSwap](https://dev.balancer.fi/references/contracts/apis/the-vault#batch-swaps).
      *
@@ -85,7 +85,7 @@ export class Swaps {
     }
 
     /**
-     * Simple interface to execute a simple flashSwap with the Balancer Vault.
+     * Encode simple flash swap into a ABI byte string
      *
      * A "simple" flash swap is an arbitrage executed with only two tokens and two pools,
      * swapping in the first pool and then back in the second pool for a profit. For more
@@ -98,7 +98,7 @@ export class Swaps {
      * @param {string[]}                    params.poolIds - array of Balancer pool ids
      * @param {string[]}                    params.assets - array of token addresses
      * @param {string}                      params.walletAddress - array of token addresses
-     * @returns {string}            encodedBatchSwapData - Returns an ABI byte string containing the data of the function call on a contract
+     * @returns {string}                    encodedBatchSwapData - Returns an ABI byte string containing the data of the function call on a contract
      */
     static encodeSimpleFlashSwap(params: SimpleFlashSwapParameters): string {
         return this.encodeBatchSwap(
