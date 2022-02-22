@@ -1,5 +1,5 @@
 import { Contract } from '@ethersproject/contracts';
-import { assert, expect } from 'chai';
+import { expect } from 'chai';
 import {
     convertSimpleFlashSwapToBatchSwapParameters,
     querySimpleFlashSwap,
@@ -7,8 +7,17 @@ import {
 import { SwapType } from '../../types';
 import vaultAbi from '@/lib/abi/Vault.json';
 import { balancerVault } from '../../../../lib/constants/config';
-import { InfuraProvider } from '@ethersproject/providers';
-import { Network } from '../../../../lib/constants/network';
+import MockProvider from '../../../../test/lib/MockProvider';
+
+class MockVaultContract extends Contract {
+    // Stubbed methods
+    async queryBatchSwap(...rest: unknown[]) {
+        // This validates the input to the method
+        this.interface.encodeFunctionData('queryBatchSwap', rest);
+
+        return [1, 2];
+    }
+}
 
 describe('convertSimpleFlashSwapToBatchSwapParameters', () => {
     it('should convert flash swap parameters to batch swap parameters', () => {
@@ -62,17 +71,17 @@ describe('convertSimpleFlashSwapToBatchSwapParameters', () => {
         ).to.eql(batchSwapParameters);
     });
 });
-describe('querySimpleFlashSwap', () => {
-    describe('response', async function () {
-        // This request is sometimes slow
-        this.slow(3000);
 
+describe('querySimpleFlashSwap', () => {
+    const vaultContract = new MockVaultContract(
+        balancerVault,
+        vaultAbi,
+        new MockProvider()
+    );
+
+    describe('response', async function () {
         const response = await querySimpleFlashSwap({
-            vaultContract: new Contract(
-                balancerVault,
-                vaultAbi,
-                new InfuraProvider(Network.KOVAN, process.env.INFURA)
-            ),
+            vaultContract,
             flashLoanAmount: '10000',
             poolIds: [
                 '0x0cdab06b07197d96369fea6f3bea6efc7ecdf7090002000000000000000003de',
@@ -84,26 +93,15 @@ describe('querySimpleFlashSwap', () => {
             ],
         });
 
-        it('should return the estimated profits', () => {
-            assert.isNumber(
-                Number(
-                    response.profits[
-                        '0xc2569dd7d0fd715b054fbf16e75b001e5c0c1115'
-                    ]
-                )
-            );
-
-            assert.isNumber(
-                Number(
-                    response.profits[
-                        '0x04df6e4121c27713ed22341e7c7df330f56f289b'
-                    ]
-                )
-            );
+        it('should return the estimated profits', async () => {
+            expect(response.profits).to.eql({
+                '0xc2569dd7d0fd715b054fbf16e75b001e5c0c1115': '-1',
+                '0x04df6e4121c27713ed22341e7c7df330f56f289b': '-2',
+            });
         });
 
         it('should indicated if flash swap will be profitable', async () => {
-            assert.isBoolean(response.isProfitable);
+            expect(response.isProfitable).to.equal(false);
         });
     });
 });
