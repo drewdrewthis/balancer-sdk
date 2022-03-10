@@ -117,7 +117,6 @@ Gotchas:
 
 -   Both pools must have both assets (tokens) for swaps to work
 -   No pool token balances can be zero
--   flashLoanAmount must not add or subtract > 30% of pool liquidity (see [limitations](https://docs.balancer.fi/v/v1/core-concepts/protocol/limitations#v2-limits))
 -   If the flash swap isn't profitable, the internal flash loan will fail.
 
 ### #encodeSimpleFlashSwap
