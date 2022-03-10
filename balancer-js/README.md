@@ -107,7 +107,7 @@ Swaps.encodeBatchSwap(batchSwap: {
 
 ### Swap Service: Flash Swaps
 
-A [Flash Swap](https://dev.balancer.fi/resources/swaps/flash-swaps) is a special type of [batch swap](https://dev.balancer.fi/resources/swaps/batch-swaps) where the caller doesn't need to own or provide any of the input tokens -- the caller is essentiall taking a "flash loan" (an uncollateralized loan) from the Balancer Vault. The full amount of the input token must be returned to the Vault by the end of the batch (plus any swap fees), however any excess of an output tokens can be sent to any address.
+A [Flash Swap](https://dev.balancer.fi/resources/swaps/flash-swaps) is a special type of [batch swap](https://dev.balancer.fi/resources/swaps/batch-swaps) where the caller doesn't need to own or provide any of the input tokens -- the caller is essentially taking a "flash loan" (an uncollateralized loan) from the Balancer Vault. The full amount of the input token must be returned to the Vault by the end of the batch (plus any swap fees), however any excess of an output tokens can be sent to any address.
 
 IMPORTANT: A "simple" flash swap is an arbitrage executed with only two tokens and two pools,
 swapping in the first pool and then back in the second pool for a profit. For more
@@ -118,7 +118,7 @@ Gotchas:
 -   Both pools must have both assets (tokens) for swaps to work
 -   No pool token balances can be zero
 -   flashLoanAmount must not add or subtract > 30% of pool liquidity (see [limitations](https://docs.balancer.fi/v/v1/core-concepts/protocol/limitations#v2-limits))
--   If the flash swap isn't profitable, the interal flash loan will fail.
+-   If the flash swap isn't profitable, the internal flash loan will fail.
 
 ### #encodeSimpleFlashSwap
 
