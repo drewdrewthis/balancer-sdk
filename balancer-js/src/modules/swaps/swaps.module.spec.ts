@@ -9,7 +9,7 @@ import {
     Swaps,
 } from '@/.';
 import { mockPool, mockPoolDataService } from '@/test/lib/mockPool';
-import { SwapType } from '../types';
+import { SwapType } from './types';
 
 dotenv.config();
 

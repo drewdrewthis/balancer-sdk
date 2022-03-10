@@ -3,11 +3,11 @@ import { expect } from 'chai';
 import {
     convertSimpleFlashSwapToBatchSwapParameters,
     querySimpleFlashSwap,
-} from '..';
-import { SwapType } from '../../types';
+} from '.';
+import { SwapType } from '../types';
 import vaultAbi from '@/lib/abi/Vault.json';
-import { balancerVault } from '../../../../lib/constants/config';
-import MockProvider from '../../../../test/lib/MockProvider';
+import { balancerVault } from '../../../lib/constants/config';
+import MockProvider from '../../../test/lib/MockProvider';
 
 class MockVaultContract extends Contract {
     // Stubbed methods
