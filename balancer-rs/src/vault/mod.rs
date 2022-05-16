@@ -88,10 +88,10 @@ impl VaultService {
    * This is NOT WORKING -- there is something wrong with
    * the arguments being passed
    */
-  pub async fn get_pool(&self, id: String) -> Address {
+  pub async fn get_pool(&self, pool_id: String) -> Address {
     let pool_address: &Address = &self
       .contract
-      .query("getPool", id.to_string(), None, Options::default(), None)
+      .query("getPool", pool_id, None, Options::default(), None)
       .await
       .unwrap();
 
