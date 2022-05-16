@@ -6,8 +6,6 @@ use web3::types::{Address, H256};
 
 const VAULT_CONTRACT_ADDRESS: &'static str = "0xBA12222222228d8Ba445958a75a0704d566BF2C8";
 
-ethcontract::contract!("src/abis/MyContract.json", contract = MyContract);
-
 #[allow(dead_code)]
 pub fn get_contract(
   web3: &web3::Web3<web3::transports::Http>,
@@ -90,38 +88,13 @@ impl VaultService {
    * This is NOT WORKING -- there is something wrong with
    * the arguments being passed
    */
-  pub async fn get_pool(&self, id: String) {
-    let path = env::current_dir().unwrap();
-    println!("The current directory is {}", path.display());
+  pub async fn get_pool(&self, id: String) -> Address {
+    let pool_address: &Address = &self
+      .contract
+      .query("getPool", id.to_string(), None, Options::default(), None)
+      .await
+      .unwrap();
 
-    let out_dir = std::env::var("OUT_DIR").unwrap();
-    let dest = std::path::Path::new(&out_dir).join("rust_coin.rs");
-
-    // let pool_address: &Address = &self
-    //   .contract
-    //   .query("getPool", id.to_string(), None, Options::default(), None)
-    //   .await
-    //   .unwrap();
-
-    // return pool_address.clone();
-    // Load a contract.
-    // let contract = TruffleLoader::new()
-    //   .load_contract_from_file("src/abis/MyContract.json")
-    //   .unwrap();
-
-    // // Generate bindings for it.
-    // ContractBuilder::new()
-    //   .generate(&contract)
-    //   .unwrap()
-    //   .write_to_file(dest)
-    //   .unwrap();
-
-    // rust_coin::MyContract::new
-    let instance = my_contract::Contract::get_pool();
-
-    // // let pool_address = instance.get_pool(id);
-    // let pool_address = instance::get_pool(id).unwrap();
-
-    // return pool_address.clone();
+    return pool_address.clone();
   }
 }
