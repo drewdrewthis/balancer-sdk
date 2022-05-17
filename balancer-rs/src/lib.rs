@@ -1,5 +1,4 @@
-pub mod generated_test_contract_fixed;
+pub mod generated_contracts;
 pub mod helpers;
-pub mod infura;
 pub mod pools;
 pub mod vault;

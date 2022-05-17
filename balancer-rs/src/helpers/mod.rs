@@ -1,49 +1,32 @@
-pub use std::str::FromStr;
-
 extern crate hexutil;
 
-pub use hex;
-
 pub use ethcontract::tokens::{Bytes, Tokenize};
+pub use ethcontract::Address;
+pub use std::str::FromStr;
 
-#[cfg(test)]
-mod tests {
-  // #[test]
-  #[actix_rt::test]
-  async fn test_use_simple_contract() {
-    use super::*;
+use ethcontract_common::abi::Token::FixedBytes;
+use std::any::type_name;
 
-    const VAULT_CONTRACT_ADDRESS: &'static str = "0xBA12222222228d8Ba445958a75a0704d566BF2C8";
-
-    let rpc_endpoint = crate::infura::build_url();
-    let transport = ethcontract::web3::transports::Http::new(&rpc_endpoint).unwrap();
-    let web3 = ethcontract::Web3::new(transport);
-
-    let vault_address =
-      ethcontract::Address::from_str(&VAULT_CONTRACT_ADDRESS.to_string()).unwrap();
-
-    let instance =
-      crate::generated_test_contract_fixed::SimpleTestContract::at(&web3, vault_address);
-
-    let pool_id =
-      hexutil::read_hex("0x32296969ef14eb0c6d29669c550d4a0449130230000200000000000000000080")
-        .unwrap();
-
-    let bytes = ethcontract_common::abi::Token::FixedBytes(pool_id);
-
-    let param = ethcontract::tokens::Bytes::from_token(bytes).unwrap();
-
-    let result = instance.get_pool(param);
-
-    // Running this will show that it will actually call and get the data from the blockchain
-    // println!("Address found: {:#?}", result.clone().call().await.unwrap());
-
-    assert_eq!(
-      result.m.tx.data.unwrap(),
-      ethcontract::web3::types::Bytes(
-        hexutil::read_hex("0x32296969ef14eb0c6d29669c550d4a0449130230000200000000000000000080")
-          .unwrap()
-      )
-    );
-  }
+pub fn hex_string_to_bytes32(string: &str) -> ethcontract::Bytes<[u8; 32]> {
+  let hex_string = hexutil::read_hex(&string);
+  let bytes = FixedBytes(hex_string.unwrap());
+  return Bytes::from_token(bytes).unwrap();
 }
+
+pub fn type_of<T>(_: T) -> &'static str {
+  type_name::<T>()
+}
+
+pub fn build_web3(rpc_endpoint: &str) -> web3::Web3<web3::transports::Http> {
+  let transport = web3::transports::Http::new(&rpc_endpoint).unwrap();
+  return web3::Web3::new(transport);
+}
+
+#[macro_export]
+macro_rules! addr {
+  ($address: expr) => {
+    ethcontract::Address::from_str($address).unwrap()
+  };
+}
+
+pub use addr;
