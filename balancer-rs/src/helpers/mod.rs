@@ -13,6 +13,10 @@ pub fn hex_string_to_bytes32(string: &str) -> ethcontract::Bytes<[u8; 32]> {
   return Bytes::from_token(bytes).unwrap();
 }
 
+pub fn bytes32_to_string(value: ethcontract::Bytes<[u8; 32]>) -> String {
+  return value.into_token().to_string();
+}
+
 pub fn type_of<T>(_: T) -> &'static str {
   type_name::<T>()
 }
