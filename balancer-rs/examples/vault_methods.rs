@@ -19,7 +19,10 @@ use std::str::FromStr;
 // You can replace the RPC_URL with whatever is your prefered rpc endpoint.
 const RPC_URL: &'static str = "https://rpc.flashbots.net/";
 fn get_vault_instance() -> balancer_rs::generated_contracts::vault::Vault {
-  return balancer_rs::vault::get_contract_instance(RPC_URL);
+  let transport = ethcontract::web3::transports::Http::new(RPC_URL).unwrap();
+  let web3 = ethcontract::Web3::new(transport);
+
+  return balancer_rs::vault::Vault::new(web3);
 }
 
 // VAULT API EXAMPLES

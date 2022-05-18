@@ -25,7 +25,7 @@ use helpers::*;
 const RPC_URL: &'static str = "https://rpc.flashbots.net/";
 const POOL_ADDRESS: &'static str = "0x01abc00e86c7e258823b9a055fd62ca6cf61a163";
 fn get_pool_instance() -> WeightedPool {
-  let pool_address = addr!("0x01abc00e86c7e258823b9a055fd62ca6cf61a163");
+  let pool_address = addr!(POOL_ADDRESS);
   return weighted_pool::get_contract_instance(RPC_URL, pool_address);
 }
 
