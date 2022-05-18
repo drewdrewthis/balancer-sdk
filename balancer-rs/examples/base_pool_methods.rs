@@ -29,6 +29,19 @@ fn get_pool_instance() -> WeightedPool {
 }
 
 // BASE POOL API EXAMPLES
+async fn get_vault() {
+  print_start_new_example("BasePool#getPoolId");
+
+  let instance = get_pool_instance();
+  let vault_address = instance.get_vault().call().await.unwrap();
+
+  println!(
+    "Balancer Pool Vault Address {:#?}",
+    bytes32_to_string(vault_address),
+    POOL_ADDRESS
+  );
+}
+
 async fn get_pool_id() {
   print_start_new_example("BasePool#getPoolId");
 
@@ -47,5 +60,6 @@ async fn get_pool_id() {
  */
 #[tokio::main]
 async fn main() {
+  get_vault().await;
   get_pool_id().await;
 }
