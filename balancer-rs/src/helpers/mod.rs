@@ -6,14 +6,7 @@ use std::any::type_name;
 
 pub mod conversions {
   pub use ethcontract::tokens::{Bytes, Tokenize};
-  use ethcontract_common::abi::Token::FixedBytes;
   use ethers_core::utils;
-
-  pub fn hex_string_to_bytes32(string: &str) -> ethcontract::Bytes<[u8; 32]> {
-    let hex_string = hexutil::read_hex(&string);
-    let bytes = FixedBytes(hex_string.unwrap());
-    return Bytes::from_token(bytes).unwrap();
-  }
 
   pub fn bytes32_to_string(value: ethcontract::Bytes<[u8; 32]>) -> String {
     return value.into_token().to_string();

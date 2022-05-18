@@ -9,6 +9,7 @@ extern crate balancer_rs;
 mod helpers;
 
 use balancer_rs::helpers::conversions::*;
+use balancer_rs::types::*;
 use ethcontract::Address;
 use helpers::*;
 use std::str::FromStr;
@@ -94,8 +95,8 @@ async fn get_pool() {
 
   let instance = get_vault_instance();
   let pool_id = "0x32296969ef14eb0c6d29669c550d4a0449130230000200000000000000000080";
-  let hex_string = hex_string_to_bytes32(pool_id);
-  let address_str = instance.get_pool(hex_string).call().await.unwrap();
+  let data = HexString(pool_id).to_bytes32();
+  let address_str = instance.get_pool(data).call().await.unwrap();
 
   println!(
     "Balancer Pool address {:#?} for pool id {:#?}",
