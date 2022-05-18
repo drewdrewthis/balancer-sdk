@@ -8,7 +8,6 @@
 extern crate balancer_rs;
 mod helpers;
 
-use balancer_rs::helpers::conversions::*;
 use balancer_rs::types::*;
 use ethcontract::Address;
 use helpers::*;
