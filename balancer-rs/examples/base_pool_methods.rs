@@ -12,10 +12,11 @@ extern crate balancer_rs;
 mod helpers;
 
 use balancer_rs::generated_contracts::weighted_pool::WeightedPool;
-use balancer_rs::helpers::*;
+use balancer_rs::helpers::conversions::*;
+use balancer_rs::helpers::macros::*;
 use balancer_rs::weighted_pool;
+use ethers_core::utils;
 use helpers::*;
-use std::str::FromStr;
 
 // HELPERS
 
@@ -30,29 +31,73 @@ fn get_pool_instance() -> WeightedPool {
 
 // BASE POOL API EXAMPLES
 async fn get_vault() {
-  print_start_new_example("BasePool#getPoolId");
+  print_start_new_example("BasePool#getVault");
 
   let instance = get_pool_instance();
   let vault_address = instance.get_vault().call().await.unwrap();
 
-  println!(
-    "Balancer Pool Vault Address {:#?}",
-    bytes32_to_string(vault_address),
-    POOL_ADDRESS
-  );
+  println!("Balancer Pool Vault Address {:#?}", vault_address,);
 }
 
 async fn get_pool_id() {
   print_start_new_example("BasePool#getPoolId");
 
   let instance = get_pool_instance();
-  let authorizer = instance.get_pool_id().call().await.unwrap();
+  let id = instance.get_pool_id().call().await.unwrap();
 
   println!(
     "Balancer Pool Id {:#?} for pool with address {:#?}",
-    bytes32_to_string(authorizer),
+    bytes32_to_string(id),
     POOL_ADDRESS
   );
+}
+
+async fn get_swap_fee_percentage() {
+  print_start_new_example("BasePool#getSwapFeePercentage");
+
+  let instance = get_pool_instance();
+  let fee = instance.get_swap_fee_percentage().call().await.unwrap();
+  let fee_human_readable = utils::format_units(fee.as_usize(), 18 - 2).unwrap();
+
+  println!(
+    "Balancer Pool Id {:#?} swap fee percentage {:#?} ({})",
+    POOL_ADDRESS,
+    fee,
+    format!("{:.4}%", fee_human_readable)
+  );
+}
+
+/**
+* Updates the pool's swap fee.
+
+ Note: This can only be called by an authorized account, denoted by the pool's owner. There are three cases for swap fee control:
+
+ - Swap Fees are immutable
+  - Owner: 0x0000000000000000000000000000000000000000
+ - Swap Fees are controlled by a third party (currently Gauntlet)
+  - Owner: 0xBA1BA1ba1BA1bA1bA1Ba1BA1ba1BA1bA1ba1ba1B
+ - Swap Fees are controlled by an account immutably set at pool creation
+  - Owner: the account which was set at pool creation
+*/
+async fn set_swap_fee_percentage() {
+  print_start_new_example("BasePool#setSwapFeePercentage");
+
+  let instance = get_pool_instance();
+  let percentage = readable_string_to_swap_fee_percentage("0.15");
+
+  let result = match instance
+    .set_swap_fee_percentage(percentage.into())
+    .call()
+    .await
+  {
+    Ok(any) => any,
+    Err(e) => println!(
+      "This should fail with BAL#401 if you are not the pool owner. {}",
+      e
+    ),
+  };
+
+  println!("Balancer Pool fee set? {:#?}", result);
 }
 
 /**
@@ -62,4 +107,6 @@ async fn get_pool_id() {
 async fn main() {
   get_vault().await;
   get_pool_id().await;
+  get_swap_fee_percentage().await;
+  set_swap_fee_percentage().await;
 }
