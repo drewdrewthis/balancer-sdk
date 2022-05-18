@@ -1,13 +1,9 @@
 extern crate hexutil;
 
-pub mod vault_service;
-
 use super::generated_contracts::vault::Vault;
-
-pub use ethcontract::tokens::{Bytes, Tokenize};
-pub use ethcontract_common::abi::Token::FixedBytes;
 use std::str::FromStr;
 
+// This should always be the same address across chains
 const VAULT_CONTRACT_ADDRESS: &'static str = "0xBA12222222228d8Ba445958a75a0704d566BF2C8";
 
 /**
