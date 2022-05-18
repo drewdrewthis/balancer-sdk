@@ -1,13 +1,27 @@
 use ethcontract::tokens::{Bytes, Tokenize};
 use ethcontract_common::abi::Token::FixedBytes;
 
+pub struct IERC20(ethcontract::Address);
+pub struct Bytes32(ethcontract::Bytes<[u8; 32]>);
+pub struct Address(ethcontract::Address);
+
+pub mod swap_request;
+pub use swap_request::SwapRequest;
+
 pub struct HexString(pub &'static str);
 impl HexString {
-  pub fn to_bytes32(&self) -> ethcontract::Bytes<[u8; 32]> {
+  pub fn to_bytes32(&self) -> Bytes32 {
     let hex_string = hexutil::read_hex(&self.0);
     let bytes = FixedBytes(hex_string.unwrap());
-    return Bytes::from_token(bytes).unwrap();
+    let result = Bytes::from_token(bytes).unwrap();
+
+    return Bytes32(result);
   }
+}
+
+pub enum SwapKind {
+  GivenIn(u8),
+  GivenOut(u8),
 }
 
 #[cfg(test)]
