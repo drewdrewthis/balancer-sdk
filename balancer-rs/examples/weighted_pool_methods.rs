@@ -10,9 +10,9 @@ mod helpers;
 
 use balancer_rs::constants::addresses::*;
 use balancer_rs::generated_contracts::weighted_pool::WeightedPool;
-use balancer_rs::helpers::macros::*;
 use balancer_rs::types::*;
 use ethcontract::U256;
+use helpers::*;
 
 // HELPERS
 // Helper to get the active instance that will interact with the ethereum node.
@@ -28,19 +28,44 @@ fn get_pool_instance() -> WeightedPool {
 }
 
 async fn on_swap() {
+  print_start_new_example("On swap");
+
+  let balance_token_in = u256!("1");
+  let balance_token_out = u256!("2");
+
   let request = SwapRequest {
-    kind: SwapKind::GivenIn("GIVEN_IN"),
+    kind: SwapKind::GivenIn,
     token_in: addr!(UNI_ADDRESS),
     token_out: addr!(AAVE_ADDRESS),
+    amount: u256!("1234"),
+    pool_id: PoolId("01abc00e86c7e258823b9a055fd62ca6cf61a16300010000000000000000003b").into(),
+    last_change_block: u256!("12345"),
+    from: addr!("0xBA12222222228d8Ba445958a75a0704d566BF2C8"),
+    to: addr!("0xBA12222222228d8Ba445958a75a0704d566BF2C8"),
+    user_data: UserData("0x").into(),
   };
-  let balanceTokenIn = U256::from_str("1234").unwrap();
-  let balanceTokenOut = U256::from_str("234").unwrap();
+
   let pool_instance = get_pool_instance();
-  let vault_address = pool_instance
-    .on_swap(request, balanceTokenIn, balanceTokenOut)
+  let deltas = match pool_instance
+    .on_swap(request.into(), balance_token_in, balance_token_out)
     .call()
     .await
-    .unwrap();
+  {
+    Ok(any) => any,
+    Err(e) => {
+      println!(
+      "
+      This will likely fail with BAL#304 - you would need to get the balance amounts correct for it to pass. 
+      However, if you get an error, that means that the call to the Ethereum node was successful!
+      ");
+
+      println!("Error {:#?}", e);
+
+      return;
+    }
+  };
+
+  println!("Deltas {:?}", deltas);
 }
 
 /**
