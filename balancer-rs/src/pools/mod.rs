@@ -1,31 +1,33 @@
+use super::generated_contracts::liquidity_bootstrapping_pool::LiquidityBootStrappingPool as GeneratedLiquidityBootstrappingPool;
+use super::generated_contracts::managed_pool::ManagedPool as GeneratedManagedPool;
 use super::generated_contracts::meta_stable_pool::MetaStablePool as GeneratedMetaStablePool;
+use super::generated_contracts::stable_pool::StablePool as GeneratedStablePool;
 use super::generated_contracts::weighted_pool::WeightedPool as GeneratedWeightedPool;
 use ethcontract::Address;
 
-pub struct WeightedPool {}
-impl WeightedPool {
-  pub fn new(
-    web3: ethcontract::Web3<ethcontract::web3::transports::Http>,
-    pool_address: Address,
-  ) -> GeneratedWeightedPool {
-    return GeneratedWeightedPool::at(&web3, pool_address);
-  }
+macro_rules! define_contract {
+  ($name:ident, $generated_name:ident) => {
+    pub struct $name {}
+    impl $name {
+      pub fn new(
+        web3: ethcontract::Web3<ethcontract::web3::transports::Http>,
+        pool_address: Address,
+      ) -> $generated_name {
+        return $generated_name::at(&web3, pool_address);
+      }
+    }
+  };
 }
 
-trait MetaPoolType {
-  fn new(
-    web3: ethcontract::Web3<ethcontract::web3::transports::Http>,
-    pool_address: Address,
-  ) -> GeneratedMetaStablePool {
-    return GeneratedMetaStablePool::at(&web3, pool_address);
-  }
-}
+define_contract!(WeightedPool, GeneratedWeightedPool);
+define_contract!(
+  LiquidityBootStrappingPool,
+  GeneratedLiquidityBootstrappingPool
+);
 
-pub struct MetaStablePool {}
-impl MetaPoolType for MetaStablePool {}
+define_contract!(MetaStablePool, GeneratedMetaStablePool);
+define_contract!(StablePool, GeneratedStablePool);
+define_contract!(ManagedPool, GeneratedManagedPool);
 
-pub struct WeightedPool2Tokens {}
-impl MetaPoolType for WeightedPool2Tokens {}
-
-pub struct StablePool {}
-impl MetaPoolType for StablePool {}
+// The API for the MetaStablePool will work for this contract. We don't have a JSON ABI for it for now.
+define_contract!(WeightedPool2Tokens, GeneratedMetaStablePool);
