@@ -27,4 +27,9 @@ fn main() {
   make_contract_from_json("./src/abis/SimpleTestContract.json", "simple_test_contract");
   make_contract_from_json("./src/abis/Vault.json", "vault");
   make_contract_from_json("./src/abis/WeightedPool.json", "weighted_pool");
+  make_contract_from_json("./src/abis/MetaStablePool.json", "meta_stable_pool");
+  make_contract_from_json(
+    "./src/abis/LiquidityBootstrappingPool.json",
+    "liquidity_bootstrapping_pool",
+  );
 }
