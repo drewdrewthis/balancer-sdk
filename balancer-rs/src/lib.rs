@@ -9,6 +9,8 @@
 //!
 //! - Vault API: [`generated_contracts::vault::vault::Contract`]
 
+mod generated_contracts;
+mod macros;
 mod structs;
 mod types;
 
@@ -16,8 +18,6 @@ pub use structs::*;
 pub use types::*;
 
 pub mod constants;
-pub mod generated_contracts;
 pub mod helpers;
-pub mod macros;
 pub mod pools;
 pub mod vault;

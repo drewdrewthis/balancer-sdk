@@ -1,9 +1,12 @@
-pub use super::generated_contracts::liquidity_bootstrapping_pool::LiquidityBootStrappingPool;
-pub use super::generated_contracts::managed_pool::ManagedPool;
-pub use super::generated_contracts::meta_stable_pool::MetaStablePool;
-pub use super::generated_contracts::stable_pool::StablePool;
-pub use super::generated_contracts::weighted_pool::WeightedPool;
-pub use super::generated_contracts::weighted_pool_2_tokens::WeightedPool2Tokens;
+//! Defines the pool structs and their methods.
+
+pub use crate::generated_contracts::*;
+pub use liquidity_bootstrapping_pool::LiquidityBootStrappingPool;
+pub use managed_pool::ManagedPool;
+pub use meta_stable_pool::MetaStablePool;
+pub use stable_pool::StablePool;
+pub use weighted_pool::WeightedPool;
+pub use weighted_pool_2_tokens::WeightedPool2Tokens;
 
 use ethcontract::Address;
 
@@ -27,6 +30,7 @@ define_contract!(StablePool);
 define_contract!(ManagedPool);
 define_contract!(WeightedPool2Tokens);
 define_contract!(WeightedPool);
+
 
 #[cfg(test)]
 pub mod tests {

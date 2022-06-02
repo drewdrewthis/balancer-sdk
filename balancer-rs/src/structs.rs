@@ -1,6 +1,7 @@
 use ethcontract::tokens::{Bytes, Tokenize};
 use ethcontract::U256;
 use ethcontract_common::abi::Token::FixedBytes;
+use ethers_core::utils::parse_units;
 
 use crate::{u256, Address, Bytes32, IERC20};
 
@@ -49,6 +50,15 @@ impl From<UserData> for ethcontract::tokens::Bytes<Vec<u8>> {
   }
 }
 
+#[derive(Debug, Clone, Copy)]
+pub struct SwapFeePercentage(pub &'static str);
+impl From<SwapFeePercentage> for ethcontract::U256 {
+  fn from(percentage: SwapFeePercentage) -> Self {
+    let wei = parse_units(percentage.0, "wei").unwrap();
+    U256::from_dec_str(&wei.to_string()).unwrap()
+  }
+}
+
 #[derive(Copy, Clone)]
 #[repr(u8)]
 pub enum SwapKind {
@@ -92,6 +102,8 @@ impl BatchSwapStep {
   /// Basic usage:
   ///
   /// ```
+  /// use balancer_rs::*;
+  /// let pool_id = PoolId("01abc00e86c7e258823b9a055fd62ca6cf61a16300010000000000000000003b");
   /// let swap_step = BatchSwapStep::new(pool_id, 0, 1, "1000", UserData("0x"));
   /// ```
   pub fn new(

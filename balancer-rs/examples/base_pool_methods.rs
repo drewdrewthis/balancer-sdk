@@ -1,19 +1,17 @@
-/**
- * This is a collection of examples for interacting with each of the Base Vault API methods.
- * Each method is run in main() below -- you can comment out whichever example you don't want
- * to run.
- *
- * The examples use the RPC_URL constant, but you can/should replace that with your own.
- *
- * Since the Base Pool contract is inherited by all of the other pools, we can use any pool interface.
- * In these examples, we use the WeightedPool
- */
+//! This is a collection of examples for interacting with each of the Base Vault API methods.
+//! Each method is run in main() below -- you can comment out whichever example you don't want
+//! to run.
+//!
+//! The examples use the RPC_URL constant, but you can/should replace that with your own.
+//! Since the Base Pool contract is inherited by all of the other pools, we can use any pool interface.
+//! In these examples, we use the WeightedPool
+
 extern crate balancer_rs;
 mod helpers;
 
-use balancer_rs::generated_contracts::weighted_pool::WeightedPool;
-use balancer_rs::helpers::conversions::*;
+use balancer_rs::pools::*;
 use balancer_rs::*;
+use ethcontract::tokens::Tokenize;
 use ethers_core::utils;
 use helpers::*;
 use std::str::FromStr;
@@ -50,7 +48,7 @@ async fn get_pool_id() {
 
   println!(
     "Balancer Pool Id {:#?} for pool with address {:#?}",
-    bytes32_to_string(id),
+    id.into_token().to_string(),
     POOL_ADDRESS
   );
 }
@@ -60,7 +58,7 @@ async fn get_swap_fee_percentage() {
 
   let instance = get_pool_instance();
   let fee = instance.get_swap_fee_percentage().call().await.unwrap();
-  let fee_human_readable = utils::format_units(fee.as_usize(), 18 - 2).unwrap();
+  let fee_human_readable = utils::format_units::<usize, i32>(fee.as_usize(), 18 - 2).unwrap();
 
   println!(
     "Balancer Pool Id {:#?} swap fee percentage {:#?} ({:.4})%",
@@ -84,13 +82,9 @@ async fn set_swap_fee_percentage() {
   print_start_new_example("BasePool#setSwapFeePercentage");
 
   let instance = get_pool_instance();
-  let percentage = readable_string_to_swap_fee_percentage("0.15");
+  let percentage = swap_fee!("0.15");
 
-  let result = match instance
-    .set_swap_fee_percentage(percentage.into())
-    .call()
-    .await
-  {
+  let result = match instance.set_swap_fee_percentage(percentage).call().await {
     Ok(any) => any,
     Err(e) => println!(
       "This should fail with BAL#401 if you are not the pool owner. {}",
