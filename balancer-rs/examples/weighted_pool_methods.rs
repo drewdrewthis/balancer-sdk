@@ -16,14 +16,14 @@ use std::str::FromStr;
 // HELPERS
 // Helper to get the active instance that will interact with the ethereum node.
 // You can replace the RPC_URL with whatever is your prefered rpc endpoint.
-const RPC_URL: &'static str = "https://rpc.flashbots.net/";
-const POOL_ADDRESS: &'static str = "0x01abc00e86c7e258823b9a055fd62ca6cf61a163";
+const RPC_URL: &str = "https://rpc.flashbots.net/";
+const POOL_ADDRESS: &str = "0x01abc00e86c7e258823b9a055fd62ca6cf61a163";
 fn get_pool_instance() -> WeightedPool {
   let transport = ethcontract::web3::transports::Http::new(RPC_URL).unwrap();
   let web3 = ethcontract::Web3::new(transport);
   let pool_address = addr!(POOL_ADDRESS);
 
-  return WeightedPool::new(web3, pool_address);
+  WeightedPool::new(web3, pool_address)
 }
 
 async fn on_swap() {

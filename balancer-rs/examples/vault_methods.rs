@@ -11,7 +11,7 @@ mod sample_data;
 
 use balancer_rs::constants::*;
 use balancer_rs::helpers::errors::handle_bal_error;
-use balancer_rs::macros::*;
+
 use balancer_rs::*;
 use ethcontract::Address;
 use helpers::*;
@@ -21,7 +21,7 @@ use std::str::FromStr;
 
 // Helper to get the active instance that will interact with the ethereum node.
 // You can replace the RPC_URL with whatever is your prefered rpc endpoint.
-const RPC_URL: &'static str = rpc_endpoints::KOVAN_TESTNET;
+const RPC_URL: &str = rpc_endpoints::KOVAN_TESTNET;
 fn get_vault_instance() -> balancer_rs::generated_contracts::vault::Vault {
   let transport = ethcontract::web3::transports::Http::new(RPC_URL).unwrap();
   let web3 = ethcontract::Web3::new(transport);

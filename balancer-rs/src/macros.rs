@@ -1,7 +1,7 @@
-pub use ethcontract::tokens::{Bytes, Tokenize};
-pub use ethcontract::U256;
-pub use ethcontract_common::abi::Token::FixedBytes;
-pub use std::str::FromStr;
+/**
+ * NB: If you use these macros, remember that all dependencies have
+ * to be in scope where they are used.
+ */
 
 #[macro_export]
 macro_rules! addr {
