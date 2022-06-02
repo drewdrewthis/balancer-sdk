@@ -1,37 +1,32 @@
-use super::generated_contracts::liquidity_bootstrapping_pool::LiquidityBootStrappingPool as GeneratedLiquidityBootstrappingPool;
-use super::generated_contracts::managed_pool::ManagedPool as GeneratedManagedPool;
-use super::generated_contracts::meta_stable_pool::MetaStablePool as GeneratedMetaStablePool;
-use super::generated_contracts::stable_pool::StablePool as GeneratedStablePool;
-pub use super::generated_contracts::weighted_pool::WeightedPool;
+use super::generated_contracts::liquidity_bootstrapping_pool::LiquidityBootStrappingPool;
+use super::generated_contracts::managed_pool::ManagedPool;
+use super::generated_contracts::meta_stable_pool::MetaStablePool;
+use super::generated_contracts::stable_pool::StablePool;
+use super::generated_contracts::weighted_pool::WeightedPool;
+use super::generated_contracts::weighted_pool_2_tokens::WeightedPool2Tokens;
+
 use ethcontract::Address;
 
 macro_rules! define_contract {
-  ($name:ident, $generated_name:ident) => {
-    pub struct $name {}
+  ($name:ident) => {
     impl $name {
-      #[allow(clippy::new_ret_no_self)]
       pub fn new(
         web3: ethcontract::Web3<ethcontract::web3::transports::Http>,
         pool_address: Address,
-      ) -> $generated_name {
-        return $generated_name::at(&web3, pool_address);
+      ) -> Self {
+        $name::at(&web3, pool_address)
       }
     }
   };
 }
 
 // define_contract!(WeightedPool, GeneratedWeightedPool);
-define_contract!(
-  LiquidityBootStrappingPool,
-  GeneratedLiquidityBootstrappingPool
-);
-
-define_contract!(MetaStablePool, GeneratedMetaStablePool);
-define_contract!(StablePool, GeneratedStablePool);
-define_contract!(ManagedPool, GeneratedManagedPool);
-
-// The API for the MetaStablePool will work for this contract. We don't have a JSON ABI for it for now.
-define_contract!(WeightedPool2Tokens, GeneratedMetaStablePool);
+define_contract!(LiquidityBootStrappingPool);
+define_contract!(MetaStablePool);
+define_contract!(StablePool);
+define_contract!(ManagedPool);
+define_contract!(WeightedPool2Tokens);
+define_contract!(WeightedPool);
 
 #[cfg(test)]
 pub mod tests {
@@ -60,14 +55,5 @@ pub mod tests {
     test_pool_instatiation!(ManagedPool);
     test_pool_instatiation!(StablePool);
     test_pool_instatiation!(MetaStablePool);
-  }
-}
-
-impl WeightedPool {
-  pub fn new(
-    web3: ethcontract::Web3<ethcontract::web3::transports::Http>,
-    pool_address: Address,
-  ) -> Self {
-    WeightedPool::at(&web3, pool_address)
   }
 }
