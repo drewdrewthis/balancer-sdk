@@ -2,7 +2,7 @@ use super::generated_contracts::liquidity_bootstrapping_pool::LiquidityBootStrap
 use super::generated_contracts::managed_pool::ManagedPool as GeneratedManagedPool;
 use super::generated_contracts::meta_stable_pool::MetaStablePool as GeneratedMetaStablePool;
 use super::generated_contracts::stable_pool::StablePool as GeneratedStablePool;
-use super::generated_contracts::weighted_pool::WeightedPool as GeneratedWeightedPool;
+pub use super::generated_contracts::weighted_pool::WeightedPool;
 use ethcontract::Address;
 
 macro_rules! define_contract {
@@ -20,7 +20,7 @@ macro_rules! define_contract {
   };
 }
 
-define_contract!(WeightedPool, GeneratedWeightedPool);
+// define_contract!(WeightedPool, GeneratedWeightedPool);
 define_contract!(
   LiquidityBootStrappingPool,
   GeneratedLiquidityBootstrappingPool
@@ -60,5 +60,14 @@ pub mod tests {
     test_pool_instatiation!(ManagedPool);
     test_pool_instatiation!(StablePool);
     test_pool_instatiation!(MetaStablePool);
+  }
+}
+
+impl WeightedPool {
+  pub fn new(
+    web3: ethcontract::Web3<ethcontract::web3::transports::Http>,
+    pool_address: Address,
+  ) -> Self {
+    WeightedPool::at(&web3, pool_address)
   }
 }

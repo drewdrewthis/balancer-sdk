@@ -8,11 +8,10 @@
 extern crate balancer_rs;
 mod helpers;
 
-use balancer_rs::constants::addresses::*;
-use balancer_rs::generated_contracts::weighted_pool::WeightedPool;
-use balancer_rs::types::*;
+use balancer_rs::{constants::addresses::*, pools::*, *};
 use ethcontract::U256;
 use helpers::*;
+use std::str::FromStr;
 
 // HELPERS
 // Helper to get the active instance that will interact with the ethereum node.
@@ -24,7 +23,7 @@ fn get_pool_instance() -> WeightedPool {
   let web3 = ethcontract::Web3::new(transport);
   let pool_address = addr!(POOL_ADDRESS);
 
-  return balancer_rs::WeightedPool::new(web3, pool_address);
+  return WeightedPool::new(web3, pool_address);
 }
 
 async fn on_swap() {
