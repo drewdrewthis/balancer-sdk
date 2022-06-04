@@ -1,5 +1,5 @@
 use ethcontract::tokens::{Bytes, Tokenize};
-use ethcontract::U256;
+use ethcontract::{H160, U256};
 use ethcontract_common::abi::Token::FixedBytes;
 use ethers_core::utils::parse_units;
 
@@ -59,7 +59,7 @@ impl From<SwapFeePercentage> for ethcontract::U256 {
     }
 }
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Debug)]
 #[repr(u8)]
 pub enum SwapKind {
     GivenIn,
@@ -74,12 +74,51 @@ impl From<SwapKind> for u8 {
     }
 }
 
+/// The SingleSwapTuple es the data structure used by the contract interface.
+/// This is what is created when calling single_swap_instance.into()
+type SingleSwapTuple = (
+    ethcontract::Bytes<[u8; 32]>,
+    u8,
+    H160,
+    H160,
+    U256,
+    ethcontract::Bytes<Vec<u8>>,
+);
+/// The SingleSwap struct defines which pool we're trading with and what kind of swap we want to perform.
+#[derive(Debug, Clone)]
+pub struct SingleSwap {
+    pub pool_id: Bytes32,
+    pub kind: SwapKind,
+    pub asset_in: Address,
+    pub asset_out: Address,
+    pub amount: U256,
+    pub user_data: ethcontract::tokens::Bytes<Vec<u8>>,
+}
+/// Allows for conversion of a BatchSwapStep to a tuple
+impl From<SingleSwap> for SingleSwapTuple {
+    fn from(swap: SingleSwap) -> SingleSwapTuple {
+        (
+            swap.pool_id,
+            swap.kind.into(),
+            swap.asset_in,
+            swap.asset_out,
+            swap.amount,
+            swap.user_data,
+        )
+    }
+}
+
 type BatchSwapTuple = (
-    ethcontract::tokens::Bytes<[u8; 32]>, // pool_id
-    ethcontract::U256,                    // asset_in_index
-    ethcontract::U256,                    // asset_out_index
-    ethcontract::U256,                    // amount
-    ethcontract::tokens::Bytes<Vec<u8>>,  // user_data
+    // pool_id
+    ethcontract::tokens::Bytes<[u8; 32]>,
+    // asset_in_index
+    ethcontract::U256,
+    // asset_out_index
+    ethcontract::U256,
+    // amount
+    ethcontract::U256,
+    // user_data
+    ethcontract::tokens::Bytes<Vec<u8>>,
 );
 
 #[derive(Clone, Debug)]
