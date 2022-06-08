@@ -39,4 +39,5 @@ fn main() {
         "./src/abis/LiquidityBootstrappingPool.json",
         "liquidity_bootstrapping_pool",
     );
+    make_contract_from_json("./src/abis/ERC20.json", "erc20");
 }

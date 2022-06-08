@@ -1,0 +1,14 @@
+{
+  "contractName": "ERC20",
+  "abi": [
+    {
+      "inputs": [
+        { "internalType": "uint256", "name": "approve", "type": "uint256" }
+      ],
+      "name": "approve",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    }
+  ]
+}

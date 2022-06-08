@@ -14,6 +14,7 @@ mod macros;
 mod structs;
 mod types;
 
+pub use generated_contracts::erc20::*;
 pub use structs::*;
 pub use types::*;
 
