@@ -16,10 +16,15 @@ use crate::{Address, Web3, ERC20};
 pub struct TokenApprover {
     web3: Web3,
     private_key: PrivateKey,
+    spender: Address,
 }
 impl TokenApprover {
-    pub fn new(web3: Web3, private_key: PrivateKey) -> Self {
-        TokenApprover { web3, private_key }
+    pub fn new(web3: Web3, spender: Address, private_key: PrivateKey) -> Self {
+        TokenApprover {
+            web3,
+            private_key,
+            spender,
+        }
     }
 
     /// Approve a token for use with the Balancer Vault
@@ -30,7 +35,7 @@ impl TokenApprover {
     ) -> Result<TransactionResult, MethodError> {
         let contract_instance = ERC20::at(&self.web3, token_address);
         contract_instance
-            .approve(amount)
+            .approve(self.spender.clone(), amount)
             .from(Account::Offline(self.private_key.clone(), None))
             .send()
             .await

@@ -130,13 +130,13 @@ pub struct BatchSwapStep {
     pub user_data: ethcontract::tokens::Bytes<Vec<u8>>,
 }
 impl BatchSwapStep {
-    /// Creates a new BatchSwapStep
+    /// # Creates a new BatchSwapStep
     ///
     /// The new constructor allows for the BatchSwapStep to be easily instantiated
     /// from easy to read strings and numbers. The inputs will be converted to typesafe
     /// and type correct values.
     ///
-    /// # Examples
+    /// ## Examples
     ///
     /// Basic usage:
     ///

@@ -15,6 +15,7 @@ mod structs;
 mod types;
 
 pub use generated_contracts::erc20::*;
+pub use helpers::*;
 pub use structs::*;
 pub use types::*;
 

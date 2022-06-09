@@ -13,16 +13,9 @@ use balancer_rs::helpers::errors::handle_bal_error;
 use balancer_rs::helpers::get_env_var;
 use balancer_rs::vault::Vault;
 use balancer_rs::*;
-use ethcontract::Account;
 use ethcontract::Address;
-use ethcontract::PrivateKey;
-use ethcontract::I256;
-use ethcontract::U256;
 use helpers::*;
 use std::str::FromStr;
-
-const RECIPIENT_WALLET_ADDRESS: &str = "0x35f5a330FD2F8e521ebd259FA272bA8069590741";
-const SENDER_WALLET_ADDRESS: &str = "0x35f5a330FD2F8e521ebd259FA272bA8069590741";
 
 // HELPERS
 

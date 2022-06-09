@@ -1,22 +1,19 @@
-/**
- * This is a collection of examples for interacting with each of the Vault API methods.
- * Each method is run in main() below -- you can comment out whichever example you don't want
- * to run.
- *
- * The examples use the RPC_URL constant, but you can/should replace that with your own.
- */
+//! # Examples: Swaps
+//!
+//! This is a collection of examples for the different types of swaps available through Balancer's protocol.
+//! It uses the following env variables from a .env file:
+//!
+//! - `RPC_URL`
+//! - `PRIVATE_KEY`
+
 extern crate balancer_rs;
 mod helpers;
 mod sample_data;
 
-use balancer_rs::helpers;
 use balancer_rs::helpers::errors::handle_bal_error;
 use balancer_rs::helpers::get_env_var;
 use balancer_rs::vault::Vault;
 use balancer_rs::*;
-use ethcontract::json::json;
-use ethcontract::web3::types::TransactionParameters;
-use ethcontract::web3::Transport;
 use ethcontract::Account;
 use ethcontract::Address;
 use ethcontract::PrivateKey;
@@ -39,28 +36,6 @@ fn get_vault_instance() -> Vault {
 
     Vault::new(web3)
 }
-
-pub async fn set_approvals(addresses: Vec<Address>) {
-    let rpc_url: String = get_env_var("RPC_URL");
-    let transport = ethcontract::web3::transports::Http::new(&rpc_url).unwrap();
-    let web3 = ethcontract::Web3::new(transport);
-
-    let private_key = PrivateKey::from_str(&get_env_var("PRIVATE_KEY")).unwrap();
-    let token_approver = TokenApprover::new(web3, private_key);
-
-    addresses.each(|address| { 
-        token_approver.approve(address, u256!("1000000000000000000"))
-        .await
-            Ok(any) => any,
-            Err(e) => {
-                println!("Failed to approve token: {}", token);
-                println!("{:#?}", e);
-                return;
-            }
-        }
-    }) 
-}
-
 
 // Examples
 #[allow(dead_code)]
@@ -110,6 +85,9 @@ pub async fn query_batch_swap() {
     println!("Asset deltas for {:#?} are {:#?}", swap_step, deltas);
 }
 
+/// Executes a single swap of USDC for DAI via the Vault for a particular pool.
+///
+/// Successful swap transaction: https://kovan.etherscan.io/tx/0xfcb6d38c73841f37bd4bf5d0e1245822a8c2457877cf071390d04fce336ce7d5
 pub async fn single_swap() {
     print_start_new_example("Vault#singleSwap");
 
@@ -147,21 +125,25 @@ pub async fn single_swap() {
     {
         Ok(any) => any,
         Err(e) => {
-            println!("Failed to build transaction: {}", e);
+            println!("Failed to build transaction. Please make sure that you've approved the required tokens for spending. See the `check_allowance` example.");
             println!("{:#?}", e);
-            // handle_bal_error(&e);
             return;
         }
     };
 
     println!("Batch swap result {:#?} for swap {:#?}", result, swap_step);
 }
+
 /// Executes a batch swap with a single swap step.
+///
+/// # Batch Swap
 ///
 /// ## Gotchas
 /// - If you don't provide gas, gas_price, or nonce, the interal [`TransactionBuilder`] will have to make a call to the node to get those values.
 /// - If the transaction will fail, then getting these values will fail as well, even on the `build` step.
+/// - If you haven't approved the tokens for spending, it will fail.
 ///
+/// Successful batch swap transaction on Kovan: https://kovan.etherscan.io/tx/0x2f7603dc9dbc0ae406bdfd95abe06d3d90152d329fad4faf1021954978468993
 #[allow(dead_code)]
 pub async fn batch_swap() {
     print_start_new_example("Vault#batchSwap");
@@ -173,10 +155,7 @@ pub async fn batch_swap() {
         addr!(sample_data::kovan::DAI_ADDRESS),
     ];
 
-    let limits = vec![i256!("9125892514880"), i256!("-9125892514880")];
-
-    println!("Limits: {:#?}", limits);
-    println!("Assets: {:#?}", assets);
+    let limits = vec![i256!("1000000000000000000"), i256!("1000000000000000000")];
 
     let swap_step = BatchSwapStep::new(
         PoolId(sample_data::kovan::POOLS[1].id),
@@ -195,99 +174,6 @@ pub async fn batch_swap() {
 
     let private_key = get_env_var("PRIVATE_KEY");
     let private_key_secure = PrivateKey::from_str(&private_key).unwrap();
-
-    println!(
-        "private key {:?} for {}",
-        private_key_secure.clone(),
-        private_key
-    );
-
-    let tx = instance
-        .batch_swap(
-            SwapKind::GivenIn.into(),
-            vec![swap_step.clone().into()],
-            assets,
-            funds.into(),
-            limits,
-            // Infinity
-            u256!("999999999999999999"),
-        )
-        .from(Account::Offline(private_key_secure, Some(42)))
-        .gas(4_712_388.into())
-        .gas_price(u256!("100000000000").into())
-        .into_inner();
-
-    let data = match tx
-        // .from(Account::Offline(private_key_secure, Some(42)))
-        // .gas(4_712_388.into())
-        // .gas_price(u256!("100000000000").into())
-        // .nonce(u256!("4"))
-        .clone()
-        .build()
-        .await
-    {
-        Ok(any) => any,
-        Err(e) => {
-            println!("Failed to build transaction: {}", e);
-            // handle_bal_error(&e);
-            return;
-        }
-    };
-
-    // println!("Data {:?}", data.clone());
-
-    let rpc_url: String = get_env_var("RPC_URL");
-    let transport = ethcontract::web3::transports::Http::new(&rpc_url).unwrap();
-    let web3 = ethcontract::Web3::new(transport);
-
-    let result = web3
-        .eth()
-        .send_raw_transaction(data.raw().unwrap())
-        .await
-        .unwrap();
-
-    println!("Batch swap result {:#?} for swap {:#?}", result, swap_step);
-}
-
-#[allow(dead_code)]
-pub async fn batch_swap_2() {
-    print_start_new_example("Vault#batchSwap");
-
-    let instance = get_vault_instance();
-
-    let assets = vec![
-        addr!(sample_data::kovan::USDC_ADDRESS),
-        addr!(sample_data::kovan::DAI_ADDRESS),
-    ];
-
-    let limits = vec![i256!("100"), i256!("-9125892514880")];
-
-    println!("Limits: {:#?}", limits);
-    println!("Assets: {:#?}", assets);
-
-    let swap_step = BatchSwapStep::new(
-        PoolId(sample_data::kovan::POOLS[1].id),
-        0,
-        1,
-        "10",
-        UserData("0x"),
-    );
-
-    let funds = FundManagement {
-        sender: addr!(SENDER_WALLET_ADDRESS),
-        from_internal_balance: false,
-        recipient: addr!(RECIPIENT_WALLET_ADDRESS),
-        to_internal_balance: false,
-    };
-
-    let private_key = get_env_var("PRIVATE_KEY");
-    let private_key_secure = PrivateKey::from_str(&private_key).unwrap();
-
-    println!(
-        "private key {:?} for {}",
-        private_key_secure.clone(),
-        private_key
-    );
 
     let result = match instance
         .batch_swap(
@@ -299,7 +185,7 @@ pub async fn batch_swap_2() {
             // Infinity
             u256!("999999999999999999"),
         )
-        .from(Account::Offline(private_key_secure, Some(42)))
+        .from(Account::Offline(private_key_secure, None))
         .gas(4_712_388.into())
         .gas_price(u256!("100000000000").into())
         // .confirmations(1)
@@ -308,9 +194,8 @@ pub async fn batch_swap_2() {
     {
         Ok(any) => any,
         Err(e) => {
-            println!("Failed to build transaction: {}", e);
+            println!("Failed to execute batch swap");
             println!("{:#?}", e);
-            // handle_bal_error(&e);
             return;
         }
     };
@@ -318,19 +203,10 @@ pub async fn batch_swap_2() {
     println!("Batch swap result {:#?} for swap {:#?}", result, swap_step);
 }
 
-/**
- * All methods for the Vault API are supported and type secure.
- */
+/// All methods for the Vault API are supported and type secure.
 #[tokio::main]
 async fn main() {
-    let tokens = vec![
-        addr!(sample_data::kovan::USDC_ADDRESS),
-        addr!(sample_data::kovan::DAI_ADDRESS),
-    ];
-
-    approve_tokens(tokens).await;
     query_batch_swap().await;
-    single_swap().await;
+    // single_swap().await;
     // batch_swap().await;
-    // batch_swap_2().await;
 }
