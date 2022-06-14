@@ -1,6 +1,7 @@
 extern crate ethcontract;
 
 pub use std::fmt;
+pub use std::str::FromStr;
 
 pub type IERC20 = ethcontract::Address;
 pub type Address = ethcontract::Address;
