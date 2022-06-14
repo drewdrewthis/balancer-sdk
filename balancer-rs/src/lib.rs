@@ -23,3 +23,6 @@ pub mod constants;
 pub mod helpers;
 pub mod pools;
 pub mod vault;
+
+// Add trait to global scope for macros
+pub use std::str::FromStr;

@@ -6,10 +6,10 @@
 //! Balancer V2 separates the Automated Market Maker (AMM) logic from the token management and accounting. Token management/accounting is done by the Vault while the AMM logic is individual to each pool.
 //! Because pools are contracts external to the Vault, they can implement any arbitrary, customized AMM logic.
 //!
-//! # Examples
+//! # Basic Use
 //! The tested examples below show basic usage of the Vault. For more examples, see the examples directory.
 //!
-//! ### Create instance
+//! ## Create instance
 //! ```rust
 //! use balancer_sdk::vault::Vault;
 //!
@@ -20,7 +20,11 @@
 //! Vault::new(web3);
 //! ```
 //!
-//! ### Get Authorizer
+//! # Vault Methods
+//! [See Balancer's Vault API documentation](https://dev.balancer.fi/references/contracts/apis/the-vault#getauthorizer)
+//!
+//! ## Authorization
+//! #### get_authorizer()
 //! ```no_run
 //! use balancer_sdk::vault::Vault;
 //! # use balancer_sdk::helpers::*;
@@ -30,8 +34,20 @@
 //! Vault::new(web3).get_authorizer().call().await.unwrap()
 //! # });
 //! ```
+//! #### set_authorizer()
+//! ```no_run
+//! use balancer_sdk::vault::Vault;
+//! use balancer_sdk::*;
+//! # use balancer_sdk::helpers::*;
 //!
-//! ### Get Pool
+//! # tokio_test::block_on(async {
+//! # let web3 = build_web3(&get_env_var("RPC_URL"));
+//! let authorizer_address = addr!("0xBA12222222228d8Ba445958a75a0704d566BF2C8");
+//! Vault::new(web3).set_authorizer(authorizer_address).call().await.unwrap()
+//! # });
+//! ```
+//!
+//! #### get_pool()
 //! ```no_run
 //! use balancer_sdk::vault::Vault;
 //! # use balancer_sdk::helpers::*;
