@@ -6,8 +6,7 @@
 //! Balancer V2 separates the Automated Market Maker (AMM) logic from the token management and accounting. Token management/accounting is done by the Vault while the AMM logic is individual to each pool.
 //! Because pools are contracts external to the Vault, they can implement any arbitrary, customized AMM logic.
 //!
-//! # Basic Use
-//! The tested examples below show basic usage of the Vault. For more examples, see the examples directory.
+//! # Basic Usage
 //!
 //! ## Create instance
 //! ```rust
@@ -290,10 +289,13 @@
 //! ```
 //!
 //! ## Single Swaps
+//! [See Balancer Single Swaps documentation](https://dev.balancer.fi/guides/swaps/single-swaps)
+//!
 //! #### swap()
+//! [See interface](struct.Vault.html#method.swap)
 //!
 //! [See Balancer documentation](https://dev.balancer.fi/references/contracts/apis/the-vault#swap)
-//! [See Balancer Single Swaps documentation](https://dev.balancer.fi/guides/swaps/single-swaps)
+//!
 //! ```no_run
 //! use balancer_sdk::vault::Vault;
 //! use balancer_sdk::*;
@@ -301,6 +303,7 @@
 //!
 //! # tokio_test::block_on(async {
 //! # let web3 = build_web3(&get_env_var("RPC_URL"));
+//!
 //! let swap_step = SingleSwap {
 //!     pool_id: PoolId::from_str("0xBA12222222228d8Ba445958a75a0704d566BF2C8").unwrap(),
 //!     kind: SwapKind::GivenIn,
@@ -319,11 +322,156 @@
 //!
 //! let limit = u256!("9125892514880");
 //! let deadline = u256!("999999999999999999");
-//! let private_key = PrivateKey::from_str("00e0000a00ecde8d4d141e8e7890e86e333b0000000b5822491dbd93b6acdebc").unwrap();
+//! // Fake Private Key
+//! let private_key = PrivateKey::from_str("00e0000a00aaaa0e0a000e0e0000e00e000a000000000000000aaa00a0aaaaaa").unwrap();
 //!
 //! let result = Vault::new(web3)
 //!     .swap(swap_step.clone().into(), funds.into(), limit, deadline)
 //!     .from(Account::Offline(private_key, Some(42)))
+//!     .gas(u256!("4712388"))
+//!     .gas_price(u256!("100000000000").into())
+//!     .send()
+//!     .await
+//!     .unwrap();
+//! # });
+//! ```
+//! ## Batch Swaps
+//!
+//! [See Balancer Batch Swaps documentation](https://dev.balancer.fi/guides/swaps/batch-swaps)
+//!
+//! #### batch_swap()
+//! Batch swap "steps" specify the assets involved, "many-to-many" sources and destinations, and min/max token limits to guard against slippage. There is also an optional deadline, after which the swap will timeout and revert. These return the token "deltas" - the net result of executing each swap sequentially.
+//!
+//! [See interface](struct.Vault.html#method.batch_swap)
+//!
+//! [See Balancer documentation](https://dev.balancer.fi/references/contracts/apis/the-vault#batch-swaps)
+//! ```no_run
+//! use balancer_sdk::vault::Vault;
+//! use balancer_sdk::*;
+//! # use balancer_sdk::helpers::*;
+//!
+//! # tokio_test::block_on(async {
+//! # let web3 = build_web3(&get_env_var("RPC_URL"));
+//! let assets = vec![
+//!     addr!("0x1f9840a85d5af5bf1d1762f925bdaddc4201f984"),
+//!     addr!("0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9"),
+//! ];
+//!
+//! let limits = vec![i256!("1000000000000000000"), i256!("1000000000000000000")];
+//!
+//! let swap_step = BatchSwapStep::new(
+//!     pool_id!("0x0371c272fdd28ac13c434f1ef6b8b52ea3e6d844"),
+//!     0,
+//!     1,
+//!     "10",
+//!     UserData("0x"),
+//! );
+//!
+//! let funds = FundManagement {
+//!     sender: addr!("0xBA12222222228d8Ba445958a75a0704d566BF2C8"),
+//!     from_internal_balance: false,
+//!     recipient: addr!("0xBA12222222228d8Ba445958a75a0704d566BF2C8"),
+//!     to_internal_balance: false,
+//! };
+//!
+//! let private_key = PrivateKey::from_str("00e0000a00aaaa0e0a000e0e0000e00e000a000000000000000aaa00a0aaaaaa").unwrap();
+//!
+//! let result = Vault::new(web3)
+//!     .batch_swap(
+//!         SwapKind::GivenIn as u8,
+//!         vec![swap_step.into()],
+//!         assets,
+//!         funds.into(),
+//!         limits,
+//!         // Infinity
+//!         u256!("999999999999999999"),
+//!     )
+//!     .from(Account::Offline(private_key, None))
+//!     .gas(u256!("4712388"))
+//!     .gas_price(u256!("100000000000").into())
+//!     .send()
+//!     .await
+//!     .unwrap();
+//! # });
+//! ```
+//!
+//! #### query_batch_swap()
+//! The queryBatchSwap method executes the exact same code as batchSwap - but reverts at the end. This is for GUIs or scripts to calculate a "dry run" of a sequence of swaps. Implemented in Swaps.
+//!
+//! [See interface](struct.Vault.html#method.query_batch_swap)
+//!
+//! [See Balancer documentation](https://dev.balancer.fi/references/contracts/apis/the-vault#batch-swaps)
+//! ```no_run
+//! use balancer_sdk::vault::Vault;
+//! use balancer_sdk::*;
+//! # use balancer_sdk::helpers::*;
+//!
+//! # tokio_test::block_on(async {
+//! # let web3 = build_web3(&get_env_var("RPC_URL"));
+//! let assets = vec![
+//!     addr!("0x1f9840a85d5af5bf1d1762f925bdaddc4201f984"),
+//!     addr!("0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9"),
+//! ];
+//!
+//! let swap_step = BatchSwapStep::new(
+//!     pool_id!("0x0371c272fdd28ac13c434f1ef6b8b52ea3e6d844"),
+//!     0,
+//!     1,
+//!     "10",
+//!     UserData("0x"),
+//! );
+//!
+//! let funds = FundManagement {
+//!     sender: addr!("0xBA12222222228d8Ba445958a75a0704d566BF2C8"),
+//!     from_internal_balance: false,
+//!     recipient: addr!("0xBA12222222228d8Ba445958a75a0704d566BF2C8"),
+//!     to_internal_balance: false,
+//! };
+//!
+//! let result = Vault::new(web3)
+//!     .query_batch_swap(
+//!         SwapKind::GivenIn as u8,
+//!         vec![swap_step.into()],
+//!         assets,
+//!         funds.into(),
+//!     )
+//!     .send()
+//!     .await
+//!     .unwrap();
+//! # });
+//! ```
+//!
+//! ## Flash Loans
+//!
+//! #### flash_loan()
+//! Execute a flash loan. This sends the given token amounts to the flash loan receiver contract; all borrowed funds - plus the protocol flash loan fee - must be returned to the vault in the same transaction, or it will revert. Implemented by a FlashLoans subclass. Implemented in FlashLoans.
+//!
+//! [See interface](struct.Vault.html#method.flash_loan)
+//!
+//! [See Balancer documentation](https://dev.balancer.fi/references/contracts/apis/the-vault#flashloan)
+//! ```no_run
+//! use balancer_sdk::vault::Vault;
+//! use balancer_sdk::*;
+//! # use balancer_sdk::helpers::*;
+//!
+//! # tokio_test::block_on(async {
+//! # let web3 = build_web3(&get_env_var("RPC_URL"));
+//! let tokens = vec![
+//!     addr!("0x1f9840a85d5af5bf1d1762f925bdaddc4201f984"),
+//!     addr!("0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9"),
+//! ];
+//!
+//! let private_key = PrivateKey::from_str("00e0000a00aaaa0e0a000e0e0000e00e000a000000000000000aaa00a0aaaaaa").unwrap();
+//!
+//! let result = Vault::new(web3)
+//!     .flash_loan(
+//!         // Recipient address
+//!         addr!("0xBA12222222228d8Ba445958a75a0704d566BF2C8"),
+//!         tokens,
+//!         vec![u256!("1000000000"), u256!("100000000")],
+//!         UserData("0x").into(),
+//!     )
+//!     .from(Account::Offline(private_key, None))
 //!     .gas(u256!("4712388"))
 //!     .gas_price(u256!("100000000000").into())
 //!     .send()

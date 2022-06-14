@@ -238,7 +238,7 @@ impl From<SwapRequest>
     }
 }
 
-/// https://dev.balancer.fi/resources/joins-and-exits/pool-joins
+/// [See Balancer documentation](https://dev.balancer.fi/resources/joins-and-exits/pool-joins)
 pub struct JoinPoolRequest {
     /// Sorted list of all tokens in pool
     pub assets: Vec<Address>,

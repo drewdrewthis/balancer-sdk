@@ -26,6 +26,6 @@ pub mod helpers;
 pub mod pools;
 pub mod vault;
 
-pub use ethcontract::{Account, Address, PrivateKey, U256};
+pub use ethcontract::{Account, Address, PrivateKey, I256, U256};
 
 pub use std::str::FromStr;
