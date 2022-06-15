@@ -494,6 +494,117 @@
 //!     .unwrap();
 //! # });
 //! ```
+//! ## Pools Methods - ManagedPools (prev. "InvestmentPools")
+//! [See Balancer's ManagedPools API documentation](https://dev.balancer.fi/references/contracts/apis/pools/investmentpools)
+//!
+//! See pool methods above for examples for the following methods:
+//! - on_swap()
+//! - get_swap_enabled()
+//! - get_gradual_weight_update_param()
+//!
+//! #### get_management_swap_fee_percentage()
+//! [See interface](struct.ManagedPool.html#method.get_management_swap_fee_percentage)
+//!
+//! Returns the management swap fee percentage with 18 decimals.
+//!
+//! [See Balancer documentation](https://dev.balancer.fi/references/contracts/apis/pools/investmentpools#getmanagementswapfeepercentage)
+//!
+//! ```no_run
+//! use balancer_sdk::pools::ManagedPool;
+//! use balancer_sdk::*;
+//! # use balancer_sdk::helpers::*;
+//!
+//! # tokio_test::block_on(async {
+//! # let web3 = build_web3(&get_env_var("RPC_URL"));
+//! let pool_address: &str = "0x0";
+//! let pool_instance = ManagedPool::new(web3, addr!(pool_address));
+//!
+//! let percentage: U256 = pool_instance.get_management_swap_fee_percentage()
+//!     .call()
+//!     .await
+//!     .unwrap();
+//! # });
+//! ```
+//! #### get_minimum_weight_change_duration()
+//! [See interface](struct.ManagedPool.html#method.get_minimum_weight_change_duration)
+//!
+//!  Returns the minimum duration of a gradual weight change.
+//!
+//! [See Balancer documentation](https://dev.balancer.fi/references/contracts/apis/pools/investmentpools#getMinimumWeightChangeDuration)
+//!
+//! ```no_run
+//! use balancer_sdk::pools::ManagedPool;
+//! use balancer_sdk::*;
+//! # use balancer_sdk::helpers::*;
+//!
+//! # tokio_test::block_on(async {
+//! # let web3 = build_web3(&get_env_var("RPC_URL"));
+//! let pool_address: &str = "0x0";
+//! let pool_instance = ManagedPool::new(web3, addr!(pool_address));
+//!
+//! let duration: U256 = pool_instance.get_minimum_weight_change_duration()
+//!     .call()
+//!     .await
+//!     .unwrap();
+//! # });
+//! ```
+//!
+//! #### get_collected_management_fees()
+//! [See interface](struct.ManagedPool.html#method.get_collected_management_fees)
+//!
+//!  Returns the amount of management fees collected
+//!
+//! [See Balancer documentation](https://dev.balancer.fi/references/contracts/apis/pools/investmentpools#getCollectedManagementFees)
+//!
+//! ```no_run
+//! use balancer_sdk::pools::ManagedPool;
+//! use balancer_sdk::*;
+//! # use balancer_sdk::helpers::*;
+//!
+//! # tokio_test::block_on(async {
+//! # let web3 = build_web3(&get_env_var("RPC_URL"));
+//! let pool_address: &str = "0x0";
+//! let pool_instance = ManagedPool::new(web3, addr!(pool_address));
+//!
+//! let (tokens, collected_fees): (Vec<IERC20>, Vec<U256>) = pool_instance.get_collected_management_fees()
+//!     .call()
+//!     .await
+//!     .unwrap();
+//! # });
+//! ```
+//!
+//! ### Permissioned Functions
+//! All of the following functions are only callable by the pool owner.
+//!
+//! See pool methods above for examples for the following methods:
+//! - set_swap_enabled()
+//! - update_weights_gradually()
+//!
+//! #### withdraw_collected_management_fees()
+//! [See interface](struct.ManagedPool.html#method.withdraw_collected_management_fees)
+//!
+//! Withdraw the collected management fees.
+//!
+//! [See Balancer documentation](https://dev.balancer.fi/references/contracts/apis/pools/investmentpools#withdrawCollectedManagementFees)
+//!
+//! ```no_run
+//! use balancer_sdk::pools::ManagedPool;
+//! use balancer_sdk::*;
+//! # use balancer_sdk::helpers::*;
+//!
+//! # tokio_test::block_on(async {
+//! # let web3 = build_web3(&get_env_var("RPC_URL"));
+//! let pool_address: &str = "0x0";
+//! let pool_instance = ManagedPool::new(web3, addr!(pool_address));
+//! let recipient = addr!("0x0");
+//!
+//! pool_instance
+//!     .withdraw_collected_management_fees(recipient)
+//!     .call()
+//!     .await
+//!     .unwrap();
+//! # });
+//! ```
 
 pub use crate::generated_contracts::*;
 pub use liquidity_bootstrapping_pool::LiquidityBootstrappingPool;

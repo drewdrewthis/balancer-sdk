@@ -52,13 +52,13 @@ pub async fn query_batch_swap() {
         addr!(sample_data::kovan::DAI_ADDRESS),
     ];
 
-    let swap_step = BatchSwapStep::new(
-        sample_data::kovan::POOLS[1].id.parse().unwrap(),
-        0,
-        1,
-        "10",
-        UserData("0x"),
-    );
+    let swap_step = BatchSwapStep {
+        pool_id: sample_data::kovan::POOLS[1].id.parse().unwrap(),
+        asset_in_index: 0,
+        asset_out_index: 1,
+        amount: u256!(10),
+        user_data: UserData("0x"),
+    };
 
     let funds = FundManagement {
         sender: addr!(SENDER_WALLET_ADDRESS),
@@ -160,13 +160,13 @@ pub async fn batch_swap() {
 
     let limits = vec![i256!("1000000000000000000"), i256!("1000000000000000000")];
 
-    let swap_step = BatchSwapStep::new(
-        pool_id!(sample_data::kovan::POOLS[1].id),
-        0,
-        1,
-        "10",
-        UserData("0x"),
-    );
+    let swap_step = BatchSwapStep {
+        pool_id: pool_id!(sample_data::kovan::POOLS[1].id),
+        asset_out_index: 0,
+        asset_in_index: 1,
+        amount: u256!("10"),
+        user_data: UserData("0x"),
+    };
 
     let funds = FundManagement {
         sender: addr!(SENDER_WALLET_ADDRESS),
@@ -189,7 +189,7 @@ pub async fn batch_swap() {
             u256!("999999999999999999"),
         )
         .from(Account::Offline(private_key_secure, None))
-        .gas(4_712_388.into())
+        .gas(u256!(4_712_388))
         .gas_price(u256!("100000000000").into())
         // .confirmations(1)
         .send()
