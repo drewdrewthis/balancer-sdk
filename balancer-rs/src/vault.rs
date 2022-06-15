@@ -524,6 +524,74 @@
 //!     .unwrap();
 //! # });
 //! ```
+//! ## Miscellaneous
+//!
+//! #### get_protocol_fees_collector()
+//! The external contract authorized to collect protocol fees. Implemented by Fees.
+//!
+//! [See interface](struct.Vault.html#method.get_protocol_fees_collector)
+//!
+//! [See Balancer documentation](https://dev.balancer.fi/references/contracts/apis/the-vault#getProtocolFeesCollector)
+//! ```no_run
+//! use balancer_sdk::vault::Vault;
+//! use balancer_sdk::*;
+//! # use balancer_sdk::helpers::*;
+//!
+//! # tokio_test::block_on(async {
+//! # let web3 = build_web3(&get_env_var("RPC_URL"));
+//!
+//! let result = Vault::new(web3)
+//!     .get_protocol_fees_collector()
+//!     .call()
+//!     .await
+//!     .unwrap();
+//! # });
+//! ```
+//! #### set_paused()
+//! Safety mechanism to halt most Vault operations in the event of an emergency. The only functions allowed involve withdrawing funds (e.g., from internal balances, or proportional pool exits). Implemented by Vault.
+//!
+//! [See interface](struct.Vault.html#method.set_paused)
+//!
+//! [See Balancer documentation](https://dev.balancer.fi/references/contracts/apis/the-vault#setPaused)
+//! ```no_run
+//! use balancer_sdk::vault::Vault;
+//! use balancer_sdk::*;
+//! # use balancer_sdk::helpers::*;
+//!
+//! # tokio_test::block_on(async {
+//! # let web3 = build_web3(&get_env_var("RPC_URL"));
+//!
+//! let private_key = PrivateKey::from_str("00e0000a00aaaa0e0a000e0e0000e00e000a000000000000000aaa00a0aaaaaa").unwrap();
+//!
+//! let result = Vault::new(web3)
+//!     .set_paused(true)
+//!     .from(Account::Offline(private_key, None))
+//!     .send()
+//!     .await
+//!     .unwrap();
+//! # });
+//! ```
+//! #### weth()
+//! The Vault's address for WETH. Implemented by Vault.
+//!
+//! [See interface](struct.Vault.html#method.weth)
+//!
+//! [See Balancer documentation](https://dev.balancer.fi/references/contracts/apis/the-vault#weth)
+//! ```no_run
+//! use balancer_sdk::vault::Vault;
+//! use balancer_sdk::*;
+//! # use balancer_sdk::helpers::*;
+//!
+//! # tokio_test::block_on(async {
+//! # let web3 = build_web3(&get_env_var("RPC_URL"));
+//!
+//! let result = Vault::new(web3)
+//!     .weth()
+//!     .call()
+//!     .await
+//!     .unwrap();
+//! # });
+//! ```
 
 pub use super::generated_contracts::vault::Vault;
 use crate::Address;
