@@ -19,6 +19,17 @@
 //! Vault::new(web3);
 //! ```
 //!
+//! ## Domain specific structs, enums, macros
+//! Some of the examples below use "helper" structs, enums, macros, etc. from this crate taken from the Balancer domain.
+//! Here are a few for easy reference:
+//!
+//! - [`addr!` macro](crate::addr)
+//! - [`BatchSwapStep`](crate::BatchSwapStep)
+//! - [`PoolId`](crate::PoolId)
+//! - [`JoinPoolRequest`](crate::JoinPoolRequest)
+//! - [`UserData`](crate::UserData)
+//!
+//!
 //! # Vault Methods
 //! [See Balancer's Vault API documentation](https://dev.balancer.fi/references/contracts/apis/the-vault#getauthorizer)
 //!
