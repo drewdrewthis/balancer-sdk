@@ -490,6 +490,40 @@
 //!     .unwrap();
 //! # });
 //! ```
+//!
+//! ## Asset Management
+//! This can only be called by the asset manager of a token in a pool.
+//!
+//! #### manage_pool_balance()
+//!  Deposit or withdraw funds from the pool (i.e., move funds between cash and managed balances), or update the total balance (i.e., reporting a gain or loss from management activities). Implemented in AssetManagers. Each PoolBalanceOp describes the type of operation (deposit/withdraw/update), the pool ID, the token, and the amount.
+//!
+//! [See interface](struct.Vault.html#method.manage_pool_balance)
+//!
+//! [See Balancer documentation](https://dev.balancer.fi/references/contracts/apis/the-vault#managepoolbalance)
+//! ```no_run
+//! use balancer_sdk::vault::Vault;
+//! use balancer_sdk::*;
+//! # use balancer_sdk::helpers::*;
+//!
+//! # tokio_test::block_on(async {
+//! # let web3 = build_web3(&get_env_var("RPC_URL"));
+//! let pool_balance_op = PoolBalanceOp {
+//!     kind: PoolBalanceOpKind::Deposit,
+//!     pool_id: pool_id!("0x0371c272fdd28ac13c434f1ef6b8b52ea3e6d844"),
+//!     token: addr!("0x1f9840a85d5af5bf1d1762f925bdaddc4201f984"),
+//!     amount: u256!("1000000000")
+//! };
+//!
+//! let private_key = PrivateKey::from_str("00e0000a00aaaa0e0a000e0e0000e00e000a000000000000000aaa00a0aaaaaa").unwrap();
+//!
+//! let result = Vault::new(web3)
+//!     .manage_pool_balance(vec![pool_balance_op.into()])
+//!     .from(Account::Offline(private_key, None))
+//!     .send()
+//!     .await
+//!     .unwrap();
+//! # });
+//! ```
 
 pub use super::generated_contracts::vault::Vault;
 use crate::Address;

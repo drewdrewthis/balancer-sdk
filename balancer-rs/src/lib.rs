@@ -1,15 +1,15 @@
-#![doc = include_str!("../README.md")]
+//! #![doc = include_str!("../README.md")]
 
-mod domain;
 mod enums;
 mod generated_contracts;
 mod macros;
+mod structs;
 mod types;
 
-pub use domain::*;
 pub use enums::*;
 pub use generated_contracts::erc20::*;
 pub use helpers::*;
+pub use structs::*;
 pub use types::*;
 
 pub mod constants;
