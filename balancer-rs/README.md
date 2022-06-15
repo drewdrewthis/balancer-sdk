@@ -29,7 +29,7 @@ balancer-rs has been tested on:
 
 ### Install from crate
 
-The balancer-rs sdk can be installed as a crate from [https://crates.io/](https://crates.io/). Simply add the following to your `[dependencies]` in your Rust project's `Cargo.toml` file:
+The balancer-rs sdk can be installed as a crate from [https://crates.io/crates/balancer_sdk](https://crates.io/crates/balancer_sdk). Simply add the following to your `[dependencies]` in your Rust project's `Cargo.toml` file:
 
 ```doc
 [dependencies]
