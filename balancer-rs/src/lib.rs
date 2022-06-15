@@ -2,7 +2,7 @@
 
 mod enums;
 mod generated_contracts;
-pub mod macros;
+mod macros;
 mod structs;
 mod types;
 
