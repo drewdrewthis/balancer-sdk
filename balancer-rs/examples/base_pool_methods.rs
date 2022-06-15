@@ -84,7 +84,11 @@ async fn set_swap_fee_percentage() {
     let instance = get_pool_instance();
     let percentage = swap_fee!("0.15");
 
-    let result = match instance.set_swap_fee_percentage(percentage).call().await {
+    let result = match instance
+        .set_swap_fee_percentage(percentage.into())
+        .call()
+        .await
+    {
         Ok(any) => any,
         Err(e) => println!(
             "This should fail with BAL#401 if you are not the pool owner. {}",
