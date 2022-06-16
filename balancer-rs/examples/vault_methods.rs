@@ -21,7 +21,7 @@ use std::str::FromStr;
 
 // Helper to get the active instance that will interact with the ethereum node.
 // You can replace the RPC_URL with whatever is your prefered rpc endpoint.
-fn get_vault_instance() -> Vault {
+fn build_vault_instance() -> Vault {
     let rpc_url: String = get_env_var("RPC_URL");
     let transport = ethcontract::web3::transports::Http::new(&rpc_url).unwrap();
     let web3 = ethcontract::Web3::new(transport);
@@ -34,7 +34,7 @@ fn get_vault_instance() -> Vault {
 async fn get_authorizer() {
     print_start_new_example("Vault#getAuthorizer");
 
-    let instance = get_vault_instance();
+    let instance = build_vault_instance();
     let authorizer = instance
         .get_authorizer()
         .call()
@@ -48,7 +48,7 @@ async fn get_authorizer() {
 async fn set_authorizer() {
     print_start_new_example("Vault#setAuthorizer");
 
-    let instance = get_vault_instance();
+    let instance = build_vault_instance();
     let some_addr = "0xBA12222222228d8Ba445958a75a0704d566BF2C8";
     let auth_addr = Address::from_str(some_addr).unwrap();
 
@@ -67,7 +67,7 @@ async fn set_authorizer() {
 async fn has_approved_relayer() {
     print_start_new_example("Vault#hasApprovedRelayer");
 
-    let instance = get_vault_instance();
+    let instance = build_vault_instance();
     let some_user_addr = "0xBA12222222228d8Ba445958a75a0704d566BF2C8";
     let some_relayer_addr = "0xBA12222222228d8Ba445958a75a0704d566BF2C8";
     let user_addr = Address::from_str(some_user_addr).unwrap();
@@ -86,7 +86,7 @@ async fn has_approved_relayer() {
 async fn get_internal_balance() {
     print_start_new_example("Vault#getInternalBalance");
 
-    let instance = get_vault_instance();
+    let instance = build_vault_instance();
     let some_user_addr = "0x85B0Acce5798bEAf27FEBe56572D7567b06c4B07";
     let wrapped_eth_addr = "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2";
     let user_addr = Address::from_str(some_user_addr).unwrap();
@@ -107,7 +107,7 @@ async fn get_internal_balance() {
 async fn get_pool() {
     print_start_new_example("Vault#getPool");
 
-    let instance = get_vault_instance();
+    let instance = build_vault_instance();
     let pool_id = PoolId::from_str(sample_data::kovan::POOLS[0].id).unwrap();
 
     let address_str = match instance.get_pool(pool_id.into()).call().await {
@@ -129,7 +129,7 @@ async fn get_pool() {
 async fn weth() {
     print_start_new_example("Vault#WETH");
 
-    let instance = get_vault_instance();
+    let instance = build_vault_instance();
     let weth_address = instance.weth().call().await.expect("Failed to get WETH");
 
     println!("Balancer Vault WETH address {:#?}", weth_address);

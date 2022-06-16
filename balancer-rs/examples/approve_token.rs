@@ -1,3 +1,10 @@
+//! # Example: Approve a token for spending
+//!
+//! ## ENV VARIABLES
+//! The example uses the following environment variables from a .env file:
+//! - `RPC_URL`
+//! - `PRIVATE_KEY`
+
 extern crate balancer_sdk;
 
 mod helpers;
@@ -5,7 +12,10 @@ mod sample_data;
 
 use std::str::FromStr;
 
-use balancer_sdk::*;
+use balancer_sdk::{
+    helpers::{build_web3, get_env_var, TokenApprover},
+    *,
+};
 use ethcontract::PrivateKey;
 use helpers::*;
 
@@ -13,8 +23,7 @@ pub async fn approve_token() {
     print_start_new_example("Set approval on token for spender (set allowance for Balancer Vault)");
 
     let rpc_url: String = get_env_var("RPC_URL");
-    let transport = ethcontract::web3::transports::Http::new(&rpc_url).unwrap();
-    let web3 = ethcontract::Web3::new(transport);
+    let web3 = build_web3(&rpc_url);
 
     let token = addr!(sample_data::kovan::USDC_ADDRESS);
     let private_key = PrivateKey::from_str(&get_env_var("PRIVATE_KEY")).unwrap();

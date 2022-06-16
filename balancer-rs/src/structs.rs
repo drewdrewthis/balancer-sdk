@@ -38,15 +38,34 @@ impl From<UserData> for ethcontract::tokens::Bytes<Vec<u8>> {
 #[derive(Debug, Clone)]
 pub struct FromDecStrErr;
 
+/// A struct for working with SwapFeePercentages
+///
+/// SwapFeePercentages needs to be in wei. This struct's methods allow
+/// us to easily go from a string (ie. "0.15" percent) to a wei (150000000000000000).
+///
+/// # Example
+///
+/// ```rust
+/// # use balancer_sdk::*;
+/// let fee = SwapFeePercentage::from_human_readable_str("0.15").unwrap();
+/// let value: U256 = fee.into();
+///
+/// assert_eq!(value, u256!("150000000000000000"));
+/// ```
 #[derive(Debug, Clone, Copy)]
 pub struct SwapFeePercentage(pub U256);
+impl SwapFeePercentage {
+    /// Input human readble percentage string: "0.15"
+    pub fn from_human_readable_str(s: &str) -> Result<Self, FromDecStrErr> {
+        let wei = parse_units(s, "ether").unwrap();
+        SwapFeePercentage::from_str(&wei.to_string())
+    }
+}
 impl FromStr for SwapFeePercentage {
     type Err = FromDecStrErr;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let wei = parse_units(s, "wei").unwrap();
-        let percentage = U256::from_dec_str(&wei.to_string()).unwrap();
-
+        let percentage = U256::from_dec_str(s).unwrap();
         Ok(SwapFeePercentage(percentage))
     }
 }
