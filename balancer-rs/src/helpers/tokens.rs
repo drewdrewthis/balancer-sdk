@@ -11,6 +11,7 @@ use crate::{Address, Web3, ERC20};
 ///
 /// ```no_run
 /// use balancer_sdk::*;
+/// use balancer_sdk::helpers::{TokenApprover};
 /// use std::str::FromStr;
 /// use ethcontract::PrivateKey;
 ///

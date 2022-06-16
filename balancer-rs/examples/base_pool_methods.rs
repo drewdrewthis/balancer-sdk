@@ -16,13 +16,12 @@ use ethers_core::utils;
 use helpers::*;
 use std::str::FromStr;
 
-// HELPERS
-
-// Helper to get the active instance that will interact with the ethereum node.
-// You can replace the RPC_URL with whatever is your prefered rpc endpoint.
-const RPC_URL: &str = "https://rpc.flashbots.net/";
 const POOL_ADDRESS: &str = "0x01abc00e86c7e258823b9a055fd62ca6cf61a163";
+
+/// Get the active instance that will interact with the ethereum node.
+/// You can replace the RPC_URL with whatever is your prefered rpc endpoint.
 fn get_pool_instance() -> WeightedPool {
+    const RPC_URL: &str = "https://rpc.flashbots.net/";
     let transport = ethcontract::web3::transports::Http::new(RPC_URL).unwrap();
     let web3 = ethcontract::Web3::new(transport);
     let pool_address = addr!(POOL_ADDRESS);
@@ -82,6 +81,7 @@ async fn set_swap_fee_percentage() {
     print_start_new_example("BasePool#setSwapFeePercentage");
 
     let instance = get_pool_instance();
+
     let percentage = swap_fee!("0.15");
 
     let result = match instance

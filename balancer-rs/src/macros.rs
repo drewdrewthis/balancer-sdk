@@ -16,38 +16,32 @@ macro_rules! pool_id {
     };
 }
 
-/// Simple conversion from various "numberish" types to a [`U256`](crate::U256).
-///
-/// Uses [`stringify`] to convert token to string before conversion.
+/// Simple conversion from &[str] or [usize] to a [`U256`](crate::U256).
 #[macro_export]
 macro_rules! u256 {
-    ($t: tt) => {{
+    ($t: expr) => {{
         {
-            U256::from_dec_str(stringify!($t)).unwrap()
+            U256::from_dec_str(&$t.to_string()).unwrap()
         }
     }};
 }
 
-/// Simple conversion from various "numberish" types to a [`I256`](crate::I256).
-///
-/// Uses [`stringify`] to convert token to string before conversion.
+/// Simple conversion from &[str] or [usize] to a [`I256`](crate::I256).
 #[macro_export]
 macro_rules! i256 {
-    ($t: tt) => {{
+    ($t: expr) => {{
         {
-            I256::from_dec_str(stringify!($t)).unwrap()
+            I256::from_dec_str(&$t.to_string()).unwrap()
         }
     }};
 }
 
-/// Simple conversion from various "numberish" types to a [`SwapFeePercentage`](crate::SwapFeePercentage).
-///
-/// Uses [`stringify`] to convert token to string before conversion.
+/// Simple conversion from &[str] or [usize] to a [`SwapFeePercentage`](crate::SwapFeePercentage).
 #[macro_export]
 macro_rules! swap_fee {
-    ($t: tt) => {{
+    ($t: expr) => {{
         {
-            SwapFeePercentage::from_str(stringify!($t)).unwrap()
+            SwapFeePercentage::from_human_readable_str(&$t.to_string()).unwrap()
         }
     }};
 }

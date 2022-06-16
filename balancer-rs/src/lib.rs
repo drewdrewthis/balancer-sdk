@@ -9,7 +9,6 @@ mod types;
 pub use enums::*;
 /// A generic contract for an ERC20 token
 pub use generated_contracts::erc20::ERC20;
-pub use helpers::*;
 pub use structs::*;
 pub use types::*;
 

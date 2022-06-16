@@ -3,7 +3,8 @@ extern crate balancer_sdk;
 mod helpers;
 mod sample_data;
 
-use balancer_sdk::*;
+use balancer_sdk::helpers::get_env_var;
+use balancer_sdk::{helpers::build_web3, *};
 use helpers::*;
 use std::str::FromStr;
 
@@ -13,12 +14,11 @@ use std::str::FromStr;
 /// If the allowance is 0, that means that your wallet has not approved
 /// the Balancer Vault to spend your token. If this is true, you will not
 /// be able to perfom an swaps.
-pub async fn check_allowance() {
+pub async fn check_token_allowance() {
     print_start_new_example("Check allowance for token");
 
     let rpc_url: String = get_env_var("RPC_URL");
-    let transport = ethcontract::web3::transports::Http::new(&rpc_url).unwrap();
-    let web3 = ethcontract::Web3::new(transport);
+    let web3 = build_web3(&rpc_url);
 
     let token = addr!(sample_data::kovan::DAI_ADDRESS);
 
@@ -36,5 +36,5 @@ pub async fn check_allowance() {
 
 #[tokio::main]
 async fn main() {
-    check_allowance().await;
+    check_token_allowance().await;
 }
