@@ -329,7 +329,7 @@
 //!
 //! Returns time weighted average prices corresponding to the variables in each query. secs is the duration of the query in seconds, and ago is the time in seconds from since end of that duration. Prices are represented as 18 decimal fixed point values.
 //! > **Note**
-//! > Note that you can only call getTimeWeightedAverage after the buffer is full, or it will revert with ORACLE_NOT_INITIALIZED. If you call getSample(1023) and it returns 0's, that means the buffer's not full yet.
+//! > Note that you can only call get_time_weighted_average after the buffer is full, or it will revert with ORACLE_NOT_INITIALIZED. If you call get_sample(1023) and it returns 0's, that means the buffer's not full yet.
 //!
 //! [See Balancer documentation](https://dev.balancer.fi/references/contracts/apis/pools/weightedpool2tokens#getTimeWeightedAverage)
 //!
@@ -606,7 +606,7 @@
 //! # });
 //! ```
 //!
-//! ## Pools Methods - StablePools
+//! ## Pool Methods - StablePools
 //! [See Balancer's StablePools API documentation](https://dev.balancer.fi/references/contracts/apis/pools/stablepools)
 //!
 //! See pool methods above for examples for the following methods:
@@ -687,6 +687,130 @@
 //!
 //! pool_instance
 //!     .stop_amplification_parameter_update()
+//!     .call()
+//!     .await
+//!     .unwrap();
+//! # });
+//! ```
+//!
+//! ## Pool Methods - MetaStablePools
+//! [See Balancer's StablePools API documentation](https://dev.balancer.fi/references/contracts/apis/pools/metastablepools)
+//!
+//! See pool methods above for examples for the following methods:
+//! - on_swap()
+//! - get_amplification_parameter()
+//! - enable_oracle()
+//! - get_misc_data()
+//! - get_largest_safe_query_window()
+//! - get_latest()
+//! - get_time_weighted_average()
+//! - get_past_accumulators()
+//!
+//! #### get_rate_providers()
+//! [See interface](struct.MetaStablePool.html#method.get_rate_providers)
+//!
+//! Returns rate providers that provide exchange rates between the tokens
+//!
+//! [See Balancer documentation](https://dev.balancer.fi/references/contracts/apis/pools/metastablepools#getrateproviders)
+//!
+//! ```no_run
+//! use balancer_sdk::pools::MetaStablePool;
+//! use balancer_sdk::*;
+//! # use balancer_sdk::helpers::*;
+//!
+//! # tokio_test::block_on(async {
+//! # let web3 = build_web3(&get_env_var("RPC_URL"));
+//! let pool_address: &str = "0x0";
+//! let pool_instance = MetaStablePool::new(web3, addr!(pool_address));
+//!
+//! let providers: Vec<Address> = pool_instance.get_rate_providers()
+//!     .call()
+//!     .await
+//!     .unwrap();
+//! # });
+//! ```
+//! #### get_price_rate_cache()
+//! [See interface](struct.MetaStablePool.html#method.get_price_rate_cache)
+//!
+//! Returned the cached rate, the cache duration, and the time of expiry for the current rate.
+//!
+//! [See Balancer documentation](https://dev.balancer.fi/references/contracts/apis/pools/metastablepools#getPriceRateCache)
+//!
+//! ```no_run
+//! use balancer_sdk::pools::MetaStablePool;
+//! use balancer_sdk::*;
+//! # use balancer_sdk::helpers::*;
+//!
+//! # tokio_test::block_on(async {
+//! # let web3 = build_web3(&get_env_var("RPC_URL"));
+//! let pool_address: &str = "0x0";
+//! let pool_instance = MetaStablePool::new(web3, addr!(pool_address));
+//! let token_address: IERC20 = addr!("0x0");
+//!
+//! let (rate, duration, expires): (U256, U256, U256) = pool_instance
+//!     .get_price_rate_cache(token_address)
+//!     .call()
+//!     .await
+//!     .unwrap();
+//! # });
+//! ```
+//! #### update_price_rate_cache()
+//! [See interface](struct.MetaStablePool.html#method.update_price_rate_cache)
+//!
+//! Updates the cached price rate for the given token.
+//!
+//! [See Balancer documentation](https://dev.balancer.fi/references/contracts/apis/pools/metastablepools#updatePriceRateCache)
+//!
+//! ```no_run
+//! use balancer_sdk::pools::MetaStablePool;
+//! use balancer_sdk::*;
+//! # use balancer_sdk::helpers::*;
+//!
+//! # tokio_test::block_on(async {
+//! # let web3 = build_web3(&get_env_var("RPC_URL"));
+//! let pool_address: &str = "0x0";
+//! let pool_instance = MetaStablePool::new(web3, addr!(pool_address));
+//!
+//! let token_address: IERC20 = addr!("0x0");
+//!
+//!  pool_instance
+//!     .update_price_rate_cache(token_address)
+//!     .call()
+//!     .await
+//!     .unwrap();
+//! # });
+//! ```
+//!
+//!
+//! ### Permissioned Functions
+//! All of the following functions are only callable by the pool owner.
+//!
+//! See pool methods above for examples for the following methods:
+//! - start_amplification_parameter_update()
+//! - stop_amplification_parameter_update()
+//!
+//! #### set_price_rate_cache_duration()
+//! [See interface](struct.MetaStablePool.html#method.set_price_rate_cache_duration)
+//!
+//! Sets the given `token`'s price rate cache duration to duration.
+//!
+//! [See Balancer documentation](https://dev.balancer.fi/references/contracts/apis/pools/metastablepools#setPriceRateCacheDuration)
+//!
+//! ```no_run
+//! use balancer_sdk::pools::MetaStablePool;
+//! use balancer_sdk::*;
+//! # use balancer_sdk::helpers::*;
+//!
+//! # tokio_test::block_on(async {
+//! # let web3 = build_web3(&get_env_var("RPC_URL"));
+//! let pool_address: &str = "0x0";
+//! let pool_instance = MetaStablePool::new(web3, addr!(pool_address));
+//!
+//! let token_address: IERC20 = addr!("0x0");
+//! let duration: U256 = u256!("0");
+//!
+//!  pool_instance
+//!     .set_price_rate_cache_duration(token_address, duration)
 //!     .call()
 //!     .await
 //!     .unwrap();
