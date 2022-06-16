@@ -1,10 +1,10 @@
 [package]
 name = "balancer_sdk"
-version = "0.1.13-alpha"
+version = "0.1.15-alpha"
 description = "A Rust SDK which provides commonly used utilties for interacting with Balancer Protocol V2"
-documentation = "https://docs.rs/crate/balancer_sdk"
+documentation = "https://docs.rs/balancer_sdk"
 edition = "2021"
-homepage = "https://github.com/drewdrewthis/balancer-sdk/tree/develop/balancer-rs"
+homepage = "https://crates.io/crates/balancer_sdk"
 repository = "https://github.com/drewdrewthis/balancer-sdk/tree/develop/balancer-rs"
 readme = "README.md"
 keywords = ["balancer", "crypto"]

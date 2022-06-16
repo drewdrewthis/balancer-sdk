@@ -36,6 +36,8 @@
 //!
 //! ## Authorization
 //! #### get_authorizer()
+//! [See interface](struct.Vault.html#method.get_authorizer)
+//!
 //! Returns the Vault's Authorizer (Balancer governance contract).
 //!
 //! [See Balancer documentation](https://dev.balancer.fi/references/contracts/apis/the-vault#getauthorizer)
@@ -50,6 +52,8 @@
 //! # });
 //! ```
 //! #### set_authorizer()
+//! [See interface](struct.Vault.html#method.set_authorizer)
+//!
 //! Sets a new Authorizer for the Vault. The caller must be allowed by the current Authorizer to do this.
 //!
 //! [See Balancer documentation](https://dev.balancer.fi/references/contracts/apis/the-vault#setauthorizer)
@@ -65,6 +69,8 @@
 //! # });
 //! ```
 //! #### has_approved_relayer()
+//! [See interface](struct.Vault.html#method.has_approved_relayer)
+//!
 //! Returns true if `user` has allowed relayer to act as a `relayer` for them.
 //!
 //! [See Balancer documentation](https://dev.balancer.fi/references/contracts/apis/the-vault#hasapprovedrelayer)
@@ -81,6 +87,8 @@
 //! # });
 //! ```
 //! #### set_relayer_approval()
+//! [See interface](struct.Vault.html#method.set_relayer_approval)
+//!
 //! Grants or revokes approval for the given `relayer` to call Authorizer-approved functions on behalf of `user`.
 //!
 //! [See Balancer documentation](https://dev.balancer.fi/references/contracts/apis/the-vault#hasapprovedrelayer)
@@ -100,6 +108,8 @@
 //!
 //! ## Internal Balances
 //! #### get_internal_balances()
+//! [See interface](struct.Vault.html#method.get_internal_balances)
+//!
 //! Get a user's internal balances. This is called UserBalance in external interfaces, and "internal balance" in the internal functions.
 //!
 //! [See Balancer documentation](https://dev.balancer.fi/references/contracts/apis/the-vault#getinternalbalances)
@@ -118,6 +128,8 @@
 //! # });
 //! ```
 //! #### manage_user_balance()
+//! [See interface](struct.Vault.html#method.manage_user_balance)
+//!
 //! There are four possible operations in manageUserBalance: each designates a sender/receiver, asset, and amount. The asset is either a token address or the zero address (meaning ETH). The Vault does not store ETH, but you can use ETH when interacting with internal balances; the Vault will do any necessary wrapping/unwrapping.
 //!
 //! [See Balancer documentation](https://dev.balancer.fi/references/contracts/apis/the-vault#manageuserbalance)
@@ -138,6 +150,8 @@
 //!
 //! ## Pools
 //! #### register_pool()
+//! [See interface](struct.Vault.html#method.register_pool)
+//!
 //! Called from the pool contract to generate a  Pool ID, and enter it in the Vault's pool data structures.
 //!
 //! [See Balancer documentation](https://dev.balancer.fi/references/contracts/apis/the-vault#registerpool)
@@ -155,6 +169,8 @@
 //! ```
 //!
 //! #### get_pool()
+//! [See interface](struct.Vault.html#method.get_pool)
+//!
 //! Returns a Pool's contract address and specialization setting.
 //!
 //! [See Balancer documentation](https://dev.balancer.fi/references/contracts/apis/the-vault#getpool)
@@ -172,6 +188,8 @@
 //! ```
 //!
 //! #### register_tokens()
+//! [See interface](struct.Vault.html#method.register_tokens)
+//!
 //! Called from the pool contract to tell the Vault which tokens are valid for this pool (i.e., which can be used to swap, join, or exit). An asset manager can also be assigned to each token at this step, which is thereafter immutable (unless you deregister and register again).
 //!
 //! [See Balancer documentation](https://dev.balancer.fi/references/contracts/apis/the-vault#registertokens)
@@ -195,6 +213,8 @@
 //! ```
 //!
 //! #### deregister_tokens()
+//! [See interface](struct.Vault.html#method.deregister_tokens)
+//!
 //! Remove tokens from the pool (must have zero balance).
 //!
 //! [See Balancer documentation](https://dev.balancer.fi/references/contracts/apis/the-vault#deregistertokens)
@@ -215,6 +235,8 @@
 //! ```
 //!
 //! #### get_pool_token_info()
+//! [See interface](struct.Vault.html#method.get_pool_token_info)
+//!
 //! Return details of a particular token. While getPoolTokens gives the total balance, getPoolTokenInfo returns each component of the balance, as well as the time (block) it was last modified, and the asset manager.
 //!
 //! [See Balancer documentation](https://dev.balancer.fi/references/contracts/apis/the-vault#getpooltokeninfo)
@@ -233,6 +255,8 @@
 //! ```
 //!
 //! #### get_pool_tokens()
+//! [See interface](struct.Vault.html#method.get_pool_tokens)
+//!
 //! Returns a Pool's registered tokens, the total balance for each, and the most recent block in which any of the tokens were updated. Implemented by PoolAssets.
 //!
 //! [See Balancer documentation](https://dev.balancer.fi/references/contracts/apis/the-vault#getpooltokens)
@@ -250,10 +274,13 @@
 //! ```
 //!
 //! ## Joins and Exits
-//! #### join_pool()
 //!
-//! [See Balancer documentation](https://dev.balancer.fi/references/contracts/apis/the-vault#joinpool)
+//! #### join_pool()
+//! [See interface](struct.Vault.html#method.join_pool)
+//!
 //! [See Balancer Pool Joins documentation](https://dev.balancer.fi/resources/joins-and-exits/pool-joins)
+//!
+//! [See Balancer method documentation](https://dev.balancer.fi/references/contracts/apis/the-vault#joinpool)
 //! ```no_run
 //! use balancer_sdk::vault::Vault;
 //! use balancer_sdk::*;
@@ -276,8 +303,10 @@
 //! ```
 //!
 //! #### exit_pool()
+//! [See interface](struct.Vault.html#method.exit_pool)
 //!
 //! [See Balancer method documentation](https://dev.balancer.fi/references/contracts/apis/the-vault#exitpool)
+//!
 //! [See Balancer Pool Exits documentation](https://dev.balancer.fi/resources/joins-and-exits/pool-exits)
 //! ```no_run
 //! use balancer_sdk::vault::Vault;
@@ -348,13 +377,12 @@
 //! # });
 //! ```
 //! ## Batch Swaps
-//!
 //! [See Balancer Batch Swaps documentation](https://dev.balancer.fi/guides/swaps/batch-swaps)
 //!
 //! #### batch_swap()
-//! Batch swap "steps" specify the assets involved, "many-to-many" sources and destinations, and min/max token limits to guard against slippage. There is also an optional deadline, after which the swap will timeout and revert. These return the token "deltas" - the net result of executing each swap sequentially.
-//!
 //! [See interface](struct.Vault.html#method.batch_swap)
+//!
+//! Batch swap "steps" specify the assets involved, "many-to-many" sources and destinations, and min/max token limits to guard against slippage. There is also an optional deadline, after which the swap will timeout and revert. These return the token "deltas" - the net result of executing each swap sequentially.
 //!
 //! [See Balancer documentation](https://dev.balancer.fi/references/contracts/apis/the-vault#batch-swaps)
 //! ```no_run
@@ -408,9 +436,9 @@
 //! ```
 //!
 //! #### query_batch_swap()
-//! The queryBatchSwap method executes the exact same code as batchSwap - but reverts at the end. This is for GUIs or scripts to calculate a "dry run" of a sequence of swaps. Implemented in Swaps.
-//!
 //! [See interface](struct.Vault.html#method.query_batch_swap)
+//!
+//! The queryBatchSwap method executes the exact same code as batchSwap - but reverts at the end. This is for GUIs or scripts to calculate a "dry run" of a sequence of swaps. Implemented in Swaps.
 //!
 //! [See Balancer documentation](https://dev.balancer.fi/references/contracts/apis/the-vault#batch-swaps)
 //! ```no_run
@@ -456,9 +484,9 @@
 //! ## Flash Loans
 //!
 //! #### flash_loan()
-//! Execute a flash loan. This sends the given token amounts to the flash loan receiver contract; all borrowed funds - plus the protocol flash loan fee - must be returned to the vault in the same transaction, or it will revert. Implemented by a FlashLoans subclass. Implemented in FlashLoans.
-//!
 //! [See interface](struct.Vault.html#method.flash_loan)
+//!
+//! Execute a flash loan. This sends the given token amounts to the flash loan receiver contract; all borrowed funds - plus the protocol flash loan fee - must be returned to the vault in the same transaction, or it will revert. Implemented by a FlashLoans subclass. Implemented in FlashLoans.
 //!
 //! [See Balancer documentation](https://dev.balancer.fi/references/contracts/apis/the-vault#flashloan)
 //! ```no_run
@@ -496,9 +524,9 @@
 //! This can only be called by the asset manager of a token in a pool.
 //!
 //! #### manage_pool_balance()
-//!  Deposit or withdraw funds from the pool (i.e., move funds between cash and managed balances), or update the total balance (i.e., reporting a gain or loss from management activities). Implemented in AssetManagers. Each PoolBalanceOp describes the type of operation (deposit/withdraw/update), the pool ID, the token, and the amount.
-//!
 //! [See interface](struct.Vault.html#method.manage_pool_balance)
+//!
+//! Deposit or withdraw funds from the pool (i.e., move funds between cash and managed balances), or update the total balance (i.e., reporting a gain or loss from management activities). Implemented in AssetManagers. Each PoolBalanceOp describes the type of operation (deposit/withdraw/update), the pool ID, the token, and the amount.
 //!
 //! [See Balancer documentation](https://dev.balancer.fi/references/contracts/apis/the-vault#managepoolbalance)
 //! ```no_run
@@ -528,9 +556,9 @@
 //! ## Miscellaneous
 //!
 //! #### get_protocol_fees_collector()
-//! The external contract authorized to collect protocol fees. Implemented by Fees.
-//!
 //! [See interface](struct.Vault.html#method.get_protocol_fees_collector)
+//!
+//! The external contract authorized to collect protocol fees. Implemented by Fees.
 //!
 //! [See Balancer documentation](https://dev.balancer.fi/references/contracts/apis/the-vault#getProtocolFeesCollector)
 //! ```no_run
@@ -549,9 +577,9 @@
 //! # });
 //! ```
 //! #### set_paused()
-//! Safety mechanism to halt most Vault operations in the event of an emergency. The only functions allowed involve withdrawing funds (e.g., from internal balances, or proportional pool exits). Implemented by Vault.
-//!
 //! [See interface](struct.Vault.html#method.set_paused)
+//!
+//! Safety mechanism to halt most Vault operations in the event of an emergency. The only functions allowed involve withdrawing funds (e.g., from internal balances, or proportional pool exits). Implemented by Vault.
 //!
 //! [See Balancer documentation](https://dev.balancer.fi/references/contracts/apis/the-vault#setPaused)
 //! ```no_run
@@ -573,9 +601,9 @@
 //! # });
 //! ```
 //! #### weth()
-//! The Vault's address for WETH. Implemented by Vault.
-//!
 //! [See interface](struct.Vault.html#method.weth)
+//!
+//! The Vault's address for WETH. Implemented by Vault.
 //!
 //! [See Balancer documentation](https://dev.balancer.fi/references/contracts/apis/the-vault#weth)
 //! ```no_run
