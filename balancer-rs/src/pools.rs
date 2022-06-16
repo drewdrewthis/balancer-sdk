@@ -605,6 +605,93 @@
 //!     .unwrap();
 //! # });
 //! ```
+//!
+//! ## Pools Methods - StablePools
+//! [See Balancer's StablePools API documentation](https://dev.balancer.fi/references/contracts/apis/pools/stablepools)
+//!
+//! See pool methods above for examples for the following methods:
+//! - on_swap()
+//!
+//! #### get_amplification_parameter()
+//! [See interface](struct.StablePool.html#method.get_amplification_parameter)
+//!
+//! Returns the amplification parameter value, a boolean to determine if it's updating, and its precision.
+//!
+//! [See Balancer documentation](https://dev.balancer.fi/references/contracts/apis/pools/stablepools#getamplificationparameter)
+//!
+//! ```no_run
+//! use balancer_sdk::pools::StablePool;
+//! use balancer_sdk::*;
+//! # use balancer_sdk::helpers::*;
+//!
+//! # tokio_test::block_on(async {
+//! # let web3 = build_web3(&get_env_var("RPC_URL"));
+//! let pool_address: &str = "0x0";
+//! let pool_instance = StablePool::new(web3, addr!(pool_address));
+//!
+//! let (value, is_updating, precision): (U256, bool, U256) = pool_instance.get_amplification_parameter()
+//!     .call()
+//!     .await
+//!     .unwrap();
+//! # });
+//! ```
+//! ### Permissioned Functions
+//! All of the following functions are only callable by the pool owner.
+//!
+//! #### start_amplification_parameter_update(raw_end_value: U256, end_time: U256)
+//! [See interface](struct.StablePool.html#method.start_amplification_parameter_update)
+//!
+//! Begins changing the amplification parameter to `raw_end_value` over time. The value will change linearly until `end_time` is reached, when it will be `raw_end_value`.
+//!
+//! > **Note**
+//! > Internally, the amplification parameter is represented using higher precision. The values returned by get_amplification_parameter have to be corrected to account for this when comparing to `raw_end_value`.
+//!
+//! [See Balancer documentation](https://dev.balancer.fi/references/contracts/apis/pools/stablepools#startAmplificationParameterUpdate)
+//!
+//! ```no_run
+//! use balancer_sdk::pools::StablePool;
+//! use balancer_sdk::*;
+//! # use balancer_sdk::helpers::*;
+//!
+//! # tokio_test::block_on(async {
+//! # let web3 = build_web3(&get_env_var("RPC_URL"));
+//! let pool_address: &str = "0x0";
+//! let pool_instance = StablePool::new(web3, addr!(pool_address));
+//!
+//! let raw_end_value: U256 = u256!(0);
+//! let end_time: U256 = u256!(1234);
+//!
+//! pool_instance
+//!     .start_amplification_parameter_update(raw_end_value, end_time)
+//!     .call()
+//!     .await
+//!     .unwrap();
+//! # });
+//! ```
+//! #### stop_amplification_parameter_update
+//! [See interface](struct.StablePool.html#method.stop_amplification_parameter_update)
+//!
+//! Stops the amplification parameter change process, keeping the current value.
+//!
+//! [See Balancer documentation](https://dev.balancer.fi/references/contracts/apis/pools/stablepools#stopAmplificationParameterUpdate)
+//!
+//! ```no_run
+//! use balancer_sdk::pools::StablePool;
+//! use balancer_sdk::*;
+//! # use balancer_sdk::helpers::*;
+//!
+//! # tokio_test::block_on(async {
+//! # let web3 = build_web3(&get_env_var("RPC_URL"));
+//! let pool_address: &str = "0x0";
+//! let pool_instance = StablePool::new(web3, addr!(pool_address));
+//!
+//! pool_instance
+//!     .stop_amplification_parameter_update()
+//!     .call()
+//!     .await
+//!     .unwrap();
+//! # });
+//! ```
 
 pub use crate::generated_contracts::*;
 pub use liquidity_bootstrapping_pool::LiquidityBootstrappingPool;
