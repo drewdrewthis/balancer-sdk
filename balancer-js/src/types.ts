@@ -27,14 +27,16 @@ export interface BalancerSdkSorConfig {
   fetchOnChainBalances: boolean;
 }
 
+export interface ContractAddresses {
+  vault: string;
+  multicall: string;
+  lidoRelayer?: string;
+}
+
 export interface BalancerNetworkConfig {
   chainId: Network;
   addresses: {
-    contracts: {
-      vault: string;
-      multicall: string;
-      lidoRelayer?: string;
-    };
+    contracts: ContractAddresses;
     tokens: {
       wrappedNativeAsset: string;
       lbpRaisingTokens?: string[];
@@ -46,10 +48,7 @@ export interface BalancerNetworkConfig {
     subgraph: string;
   };
   pools: {
-    staBal3Pool?: PoolReference;
-    wethStaBal3?: PoolReference;
-    bbausd?: PoolReference;
-    wethBBausd?: PoolReference;
+    wETHwstETH?: PoolReference;
   };
 }
 
